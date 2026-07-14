@@ -15,4 +15,29 @@ class AdminController extends Controller
         
         return response()->json($orders);
     }
+
+    public function dashboardStats()
+    {
+        // Statistik Total
+        $totalRevenue = Order::where('status', '!=', 'cancelled')->sum('total_price');
+        $totalOrders = Order::count();
+        $totalUsers = \App\Models\User::count();
+        
+        // Data Penjualan 7 Hari Terakhir
+        $salesData = Order::where('status', '!=', 'cancelled')
+            ->where('created_at', '>=', now()->subDays(7))
+            ->selectRaw('DATE(created_at) as date, SUM(total_price) as total')
+            ->groupBy('date')
+            ->orderBy('date', 'asc')
+            ->get();
+
+        return response()->json([
+            'summary' => [
+                'revenue' => $totalRevenue,
+                'orders' => $totalOrders,
+                'users' => $totalUsers
+            ],
+            'chartData' => $salesData
+        ]);
+    }
 }

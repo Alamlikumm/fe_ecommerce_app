@@ -1,11 +1,17 @@
 "use client";
 
 import Link from "next/link";
+import { useState, useEffect } from "react";
 import { useCartStore } from "@/store/cartStore";
 
 export default function Navbar() {
     const cartItems = useCartStore((state) => state.items);
     const totalItems = cartItems.reduce((total, item) => total + item.quantity, 0);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+    useEffect(() => {
+        setIsLoggedIn(!!localStorage.getItem("token"));
+    }, []);
 
     return (
         <nav className="bg-white shadow-sm border-b p-4 sticky top-0 z-50">
@@ -17,17 +23,24 @@ export default function Navbar() {
                 </Link>
                 {/* Menu Kanan */}
                 <div className="flex items-center gap-6">
-                    <Link href="/login" className="text-gray-600 font-medium hover:text-blue-600 transition">
-                        Login
-                    </Link>
+                    {isLoggedIn ? (
+                        <Link href="/profile" className="text-gray-700 font-bold hover:text-blue-600 flex items-center gap-2">
+                            👤 Profil Saya
+                        </Link>
+                    ) : (
+                        <Link href="/login" className="text-gray-600 font-medium hover:text-blue-600 transition">
+                            Login
+                        </Link>
+                    )}
 
                     {/* Ikon Keranjang */}
-                    <Link href="/checkout">
+                    <Link href="/cart" className="relative flex items-center text-gray-700 hover:text-blue-600 transition font-bold gap-2">
                         <span className="text-2xl">🛒</span>
+                        <span className="hidden sm:block">Keranjang</span>
 
                         {/* Lencana Angka (Hanya muncul kalau ada barang) */}
                         {totalItems > 0 && (
-                            <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full animate-bounce">
+                            <span className="absolute -top-2 -left-2 sm:-left-3 bg-red-500 text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full animate-bounce">
                                 {totalItems}
                             </span>
                         )}
