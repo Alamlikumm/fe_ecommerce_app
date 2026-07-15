@@ -4,43 +4,49 @@ import { useState } from "react";
 import api from "@/lib/api";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { LogIn } from "lucide-react";
+import { UserPlus } from "lucide-react";
 import { motion } from "framer-motion";
 
-export default function Login() {
+export default function Register() {
+    const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [passwordConfirmation, setPasswordConfirmation] = useState("");
     const [message, setMessage] = useState("");
     const [loading, setLoading] = useState(false);
     const router = useRouter();
 
-    const handleLogin = async (e) => {
+    const handleRegister = async (e) => {
         e.preventDefault();
         setLoading(true);
         setMessage("");
-        
+
+        if (password !== passwordConfirmation) {
+            setMessage("Password dan konfirmasi password tidak cocok.");
+            setLoading(false);
+            return;
+        }
+
         try {
-            const response = await api.post("/login", {
+            const response = await api.post("/register", {
+                name: name,
                 email: email,
-                password: password
+                password: password,
+                password_confirmation: passwordConfirmation
             });
 
             const token = response.data.access_token;
-            const role = response.data.role;
             localStorage.setItem("token", token);
 
-            setMessage("Login Berhasil! Mengalihkan...");
+            setMessage("Registrasi Berhasil! Mengalihkan...");
 
-            // Redirect based on role
+            // Normally a new user is not an admin, so redirect to home
             setTimeout(() => {
-                if (role === 'admin') {
-                    router.push('/admin');
-                } else {
-                    router.push('/');
-                }
+                router.push('/');
             }, 1000);
         } catch (error) {
-            setMessage(error.response?.data?.message || "Kredensial Salah / Login Gagal");
+            setMessage(error.response?.data?.message || "Registrasi gagal, periksa kembali data Anda.");
+        } finally {
             setLoading(false);
         }
     };
@@ -58,12 +64,20 @@ export default function Login() {
 
                 <div className="relative z-10">
                     <h1 className="text-3xl font-black mb-2 text-center text-gray-900 flex items-center justify-center gap-3">
-                        <LogIn className="w-8 h-8 text-indigo-500" />
-                        Login Toko
+                        <UserPlus className="w-8 h-8 text-indigo-500" />
+                        Daftar Akun
                     </h1>
-                    <p className="text-center text-gray-500 mb-8 font-medium">Selamat datang kembali! Silakan masuk ke akun Anda.</p>
+                    <p className="text-center text-gray-500 mb-8 font-medium">Buat akun untuk mulai berbelanja.</p>
 
-                    <form onSubmit={handleLogin} className="flex flex-col gap-5">
+                    <form onSubmit={handleRegister} className="flex flex-col gap-5">
+                        <input
+                            type="text"
+                            placeholder="Nama Lengkap"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            className="w-full px-5 py-4 bg-white/50 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-indigo-500 focus:outline-none backdrop-blur-sm transition-all text-gray-800 font-medium"
+                            required
+                        />
                         <input
                             type="email"
                             placeholder="Email"
@@ -79,6 +93,16 @@ export default function Login() {
                             onChange={(e) => setPassword(e.target.value)}
                             className="w-full px-5 py-4 bg-white/50 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-indigo-500 focus:outline-none backdrop-blur-sm transition-all text-gray-800 font-medium"
                             required
+                            minLength={8}
+                        />
+                        <input
+                            type="password"
+                            placeholder="Konfirmasi Password"
+                            value={passwordConfirmation}
+                            onChange={(e) => setPasswordConfirmation(e.target.value)}
+                            className="w-full px-5 py-4 bg-white/50 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-indigo-500 focus:outline-none backdrop-blur-sm transition-all text-gray-800 font-medium"
+                            required
+                            minLength={8}
                         />
                         <motion.button 
                             whileHover={{ scale: 1.02 }}
@@ -87,7 +111,7 @@ export default function Login() {
                             disabled={loading}
                             className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold p-4 rounded-2xl hover:shadow-lg hover:shadow-indigo-500/30 transition-all mt-2 flex items-center justify-center"
                         >
-                            {loading ? "Memproses..." : "Masuk"}
+                            {loading ? "Memproses..." : "Daftar Sekarang"}
                         </motion.button>
                     </form>
                     
@@ -98,9 +122,9 @@ export default function Login() {
                     )}
 
                     <div className="mt-8 text-center text-sm font-medium text-gray-600">
-                        Belum punya akun?{" "}
-                        <Link href="/register" className="text-indigo-600 hover:text-indigo-800 font-bold transition-colors">
-                            Daftar di sini
+                        Sudah punya akun?{" "}
+                        <Link href="/login" className="text-indigo-600 hover:text-indigo-800 font-bold transition-colors">
+                            Masuk di sini
                         </Link>
                     </div>
                 </div>

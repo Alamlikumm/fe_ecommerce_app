@@ -48,6 +48,8 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     // API Manajemen User & Hak Akses
     Route::get('/admin/users', [App\Http\Controllers\UserController::class, 'index']);
     Route::put('/admin/users/{id}/role', [App\Http\Controllers\UserController::class, 'updateRole']);
+    Route::put('/admin/users/{id}', [App\Http\Controllers\UserController::class, 'update']);
+    Route::delete('/admin/users/{id}', [App\Http\Controllers\UserController::class, 'destroy']);
     
 });
 

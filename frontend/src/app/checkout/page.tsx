@@ -3,6 +3,8 @@
 import { useEffect } from "react";
 import { useCartStore } from "@/store/cartStore";
 import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
+import { CreditCard, ShoppingBag, ShieldCheck } from "lucide-react";
 
 export default function CheckoutPage() {
     const { items, clearCart } = useCartStore();
@@ -81,43 +83,84 @@ export default function CheckoutPage() {
     };
 
     if (items.length === 0) {
-        return <div className="p-8 text-center mt-32 text-2xl font-bold text-gray-500">Keranjangmu masih kosong 🛒</div>;
+        return (
+            <div className="min-h-[80vh] flex flex-col items-center justify-center p-8 text-center">
+                <ShoppingBag className="w-24 h-24 text-gray-300 mb-6" />
+                <h2 className="text-3xl font-extrabold text-gray-800 dark:text-white mb-2">Keranjang Masih Kosong</h2>
+                <p className="text-gray-500 text-lg mb-8">Yuk, cari barang impianmu dulu!</p>
+                <button onClick={() => router.push("/")} className="bg-indigo-600 text-white px-8 py-3 rounded-full font-bold hover:bg-indigo-700 transition-colors">
+                    Mulai Belanja
+                </button>
+            </div>
+        );
     }
 
     return (
-        <main className="min-h-screen bg-gray-50 p-8 text-black">
-            <div className="max-w-3xl mx-auto bg-white p-8 rounded-3xl shadow-sm border">
-                <h1 className="text-3xl font-extrabold mb-8 text-gray-800">Ringkasan Pesanan</h1>
+        <main className="min-h-screen p-8 text-black dark:text-white flex items-center justify-center bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] bg-fixed">
+            <motion.div 
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, type: "spring" }}
+                className="max-w-2xl w-full glass p-8 md:p-12 rounded-[2rem] shadow-2xl border border-white/50 relative overflow-hidden"
+            >
+                {/* Decorative background blur */}
+                <div className="absolute -top-32 -right-32 w-64 h-64 bg-indigo-500/30 rounded-full blur-3xl pointer-events-none"></div>
+                <div className="absolute -bottom-32 -left-32 w-64 h-64 bg-pink-500/30 rounded-full blur-3xl pointer-events-none"></div>
 
-                <div className="space-y-4 mb-8">
-                    {items.map((item) => (
-                        <div key={item.id} className="flex justify-between border-b pb-4">
-                            <div>
-                                <h3 className="font-bold text-lg text-gray-800">{item.name}</h3>
-                                <p className="text-gray-500">{item.quantity} x Rp {new Intl.NumberFormat('id-ID').format(item.price)}</p>
-                            </div>
-                            <p className="font-extrabold text-lg text-gray-800">
-                                Rp {new Intl.NumberFormat('id-ID').format(item.price * item.quantity)}
-                            </p>
-                        </div>
-                    ))}
-                </div>
+                <div className="relative z-10">
+                    <h1 className="text-4xl font-black mb-2 text-gray-900 dark:text-white flex items-center gap-3">
+                        <CreditCard className="w-10 h-10 text-indigo-500" />
+                        Checkout
+                    </h1>
+                    <p className="text-gray-500 dark:text-gray-400 mb-10 font-medium">Selesaikan pembayaranmu dengan aman dan cepat.</p>
 
-                <div className="flex justify-between items-center bg-blue-50 p-6 rounded-2xl border border-blue-100">
-                    <div>
-                        <p className="text-gray-600 font-bold mb-1">Total Pembayaran</p>
-                        <p className="text-3xl font-black text-blue-600">
-                            Rp {new Intl.NumberFormat('id-ID').format(totalPrice)}
-                        </p>
+                    <div className="space-y-6 mb-10">
+                        {items.map((item, idx) => (
+                            <motion.div 
+                                initial={{ opacity: 0, x: -20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ delay: idx * 0.1 }}
+                                key={item.id} 
+                                className="flex justify-between items-center border-b border-gray-200 dark:border-gray-700/50 pb-6 group"
+                            >
+                                <div className="flex items-center gap-4">
+                                    <div className="w-12 h-12 bg-indigo-100 dark:bg-indigo-900/50 rounded-xl flex items-center justify-center text-indigo-600 dark:text-indigo-400 font-bold group-hover:scale-110 transition-transform">
+                                        {item.quantity}x
+                                    </div>
+                                    <div>
+                                        <h3 className="font-bold text-lg text-gray-800 dark:text-gray-100">{item.name}</h3>
+                                        <p className="text-gray-500 dark:text-gray-400 text-sm">Rp {new Intl.NumberFormat('id-ID').format(item.price)} / unit</p>
+                                    </div>
+                                </div>
+                                <p className="font-black text-xl text-gray-900 dark:text-white">
+                                    Rp {new Intl.NumberFormat('id-ID').format(item.price * item.quantity)}
+                                </p>
+                            </motion.div>
+                        ))}
                     </div>
-                    <button
-                        onClick={handleCheckout}
-                        className="bg-gray-900 text-white px-8 py-4 rounded-xl font-bold hover:bg-blue-600 transition-all shadow-lg hover:shadow-xl hover:-translate-y-1"
-                    >
-                        Bayar Sekarang
-                    </button>
+
+                    <div className="bg-gradient-to-r from-indigo-50 to-blue-50 dark:from-gray-800/80 dark:to-gray-800/50 p-8 rounded-3xl border border-indigo-100 dark:border-gray-700 relative overflow-hidden">
+                        <ShieldCheck className="absolute -right-4 -bottom-4 w-32 h-32 text-indigo-500/10 dark:text-white/5" />
+                        <div className="relative z-10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
+                            <div>
+                                <p className="text-indigo-600 dark:text-indigo-400 font-bold mb-1 uppercase tracking-wider text-sm">Total Pembayaran</p>
+                                <p className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400">
+                                    Rp {new Intl.NumberFormat('id-ID').format(totalPrice)}
+                                </p>
+                            </div>
+                            <motion.button
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                                onClick={handleCheckout}
+                                className="w-full sm:w-auto bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-8 py-4 rounded-2xl font-bold hover:shadow-xl hover:shadow-indigo-500/40 transition-all flex items-center justify-center gap-2"
+                            >
+                                <CreditCard className="w-5 h-5" />
+                                Bayar Sekarang
+                            </motion.button>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            </motion.div>
         </main>
     );
 }

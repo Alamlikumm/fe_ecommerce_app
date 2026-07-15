@@ -32,4 +32,33 @@ class UserController extends Controller
 
         return response()->json(['message' => "Hak akses pengguna berhasil diubah menjadi {$request->role}!", 'user' => $user]);
     }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255|unique:users,email,' . $id,
+        ]);
+
+        $user = User::findOrFail($id);
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->save();
+
+        return response()->json(['message' => 'Data pengguna berhasil diperbarui!', 'user' => $user]);
+    }
+
+    public function destroy(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+
+        // Mencegah admin menghapus dirinya sendiri
+        if ($user->id === $request->user()->id) {
+            return response()->json(['message' => 'Tidak bisa menghapus akun Anda sendiri!'], 400);
+        }
+
+        $user->delete();
+
+        return response()->json(['message' => 'Pengguna berhasil dihapus!']);
+    }
 }
