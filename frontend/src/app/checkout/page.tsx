@@ -1,22 +1,30 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useCartStore } from "@/store/cartStore";
+import { useToastStore } from "@/store/toastStore";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { CreditCard, ShoppingBag, ShieldCheck } from "lucide-react";
+import { CreditCard, ShoppingBag, ShieldCheck, Check, Package, MapPin, Truck, Lock } from "lucide-react";
+
+const steps = [
+    { num: 1, label: "Ringkasan", icon: ShoppingBag },
+    { num: 2, label: "Pengiriman", icon: Truck },
+    { num: 3, label: "Pembayaran", icon: CreditCard },
+];
 
 export default function CheckoutPage() {
     const { items, clearCart } = useCartStore();
+    const addToast = useToastStore((s) => s.addToast);
     const router = useRouter();
+    const [currentStep, setCurrentStep] = useState(1);
+    const [isProcessing, setIsProcessing] = useState(false);
 
-    // Hitung total harga otomatis
-    const totalPrice = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const totalPrice = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
-    // 1. Panggil script khusus dari server Midtrans secara otomatis saat halaman Checkout ini dibuka
     useEffect(() => {
         const snapScript = "https://app.sandbox.midtrans.com/snap/snap.js";
-        const clientKey = " Mid-client-ZT62-Lz_-u-wE7_3";
+        const clientKey = "Mid-client-ZT62-Lz_-u-wE7_3";
 
         const script = document.createElement("script");
         script.src = snapScript;
@@ -24,71 +32,73 @@ export default function CheckoutPage() {
         script.async = true;
 
         document.body.appendChild(script);
-
         return () => {
-            document.body.removeChild(script); // Bersihkan script jika user pindah halaman
+            document.body.removeChild(script);
         };
     }, []);
 
     const handleCheckout = async () => {
         const token = localStorage.getItem("token");
         if (!token) {
-            alert("Ups! Kamu harus login dulu.");
+            addToast({ type: "warning", title: "Login diperlukan", message: "Kamu harus login untuk checkout." });
             router.push("/login");
             return;
         }
 
+        setIsProcessing(true);
+        setCurrentStep(3);
+
         try {
-            // 2. Minta tiket (Snap Token) dari Backend Laravel
-            const res = await fetch("http://localhost:8000/api/checkout", {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/checkout`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`
+                    Authorization: `Bearer ${token}`,
                 },
-                body: JSON.stringify({ items })
+                body: JSON.stringify({ items }),
             });
 
             if (res.ok) {
                 const data = await res.json();
 
-                // 3. Panggil Pop-Up Midtrans menggunakan tiket (Token) dari Laravel tadi!
                 (window as any).snap.pay(data.snap_token, {
-                    onSuccess: function (result: any) {
-                        alert("🎉 Pembayaran Berhasil Dikonfirmasi!");
+                    onSuccess: function () {
+                        addToast({ type: "success", title: "Pembayaran Berhasil! 🎉", message: "Pesananmu sedang diproses." });
                         clearCart();
-                        router.push("/");
+                        router.push("/profile");
                     },
-                    onPending: function (result: any) {
-                        alert("⏳ Menunggu pembayaranmu (Pending). Segera selesaikan di ATM/Kasir!");
+                    onPending: function () {
+                        addToast({ type: "info", title: "Menunggu Pembayaran ⏳", message: "Segera selesaikan pembayaranmu." });
                         clearCart();
-                        router.push("/");
+                        router.push("/profile");
                     },
-                    onError: function (result: any) {
-                        alert("❌ Pembayaran Gagal!");
+                    onError: function () {
+                        addToast({ type: "error", title: "Pembayaran Gagal ❌", message: "Silakan coba lagi." });
+                        setIsProcessing(false);
                     },
                     onClose: function () {
-                        alert("Kamu menutup popup sebelum menyelesaikan pembayaran.");
-                    }
+                        addToast({ type: "warning", title: "Pembayaran Dibatalkan", message: "Kamu menutup popup pembayaran." });
+                        setIsProcessing(false);
+                    },
                 });
-
             } else {
                 const errData = await res.json();
-                alert("Error dari Server Laravel: " + errData.message);
+                addToast({ type: "error", title: "Gagal Checkout", message: errData.message });
+                setIsProcessing(false);
             }
-        } catch (error) {
-            console.error(error);
-            alert("Terjadi kesalahan jaringan.");
+        } catch {
+            addToast({ type: "error", title: "Kesalahan Jaringan", message: "Tidak bisa menghubungi server." });
+            setIsProcessing(false);
         }
     };
 
     if (items.length === 0) {
         return (
-            <div className="min-h-[80vh] flex flex-col items-center justify-center p-8 text-center">
-                <ShoppingBag className="w-24 h-24 text-gray-300 mb-6" />
-                <h2 className="text-3xl font-extrabold text-gray-800 dark:text-white mb-2">Keranjang Masih Kosong</h2>
-                <p className="text-gray-500 text-lg mb-8">Yuk, cari barang impianmu dulu!</p>
-                <button onClick={() => router.push("/")} className="bg-indigo-600 text-white px-8 py-3 rounded-full font-bold hover:bg-indigo-700 transition-colors">
+            <div className="min-h-[60vh] flex flex-col items-center justify-center p-8">
+                <ShoppingBag className="w-20 h-20 text-gray-200 dark:text-gray-700 mb-6" />
+                <h2 className="text-2xl font-black text-gray-900 dark:text-white mb-2">Keranjang Kosong</h2>
+                <p className="text-gray-500 text-sm mb-8">Tambahkan produk dulu sebelum checkout.</p>
+                <button onClick={() => router.push("/")} className="btn-primary py-3 px-8 text-sm">
                     Mulai Belanja
                 </button>
             </div>
@@ -96,71 +106,120 @@ export default function CheckoutPage() {
     }
 
     return (
-        <main className="min-h-screen p-8 text-black dark:text-white flex items-center justify-center bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] bg-fixed">
-            <motion.div 
-                initial={{ opacity: 0, y: 50 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, type: "spring" }}
-                className="max-w-2xl w-full glass p-8 md:p-12 rounded-[2rem] shadow-2xl border border-white/50 relative overflow-hidden"
-            >
-                {/* Decorative background blur */}
-                <div className="absolute -top-32 -right-32 w-64 h-64 bg-indigo-500/30 rounded-full blur-3xl pointer-events-none"></div>
-                <div className="absolute -bottom-32 -left-32 w-64 h-64 bg-pink-500/30 rounded-full blur-3xl pointer-events-none"></div>
+        <div className="max-w-4xl mx-auto px-4 md:px-6 py-8 md:py-12">
+            {/* Step Indicator */}
+            <div className="flex items-center justify-center mb-12">
+                {steps.map((step, i) => (
+                    <div key={step.num} className="flex items-center">
+                        <div className={`flex items-center gap-2 px-4 py-2 rounded-full transition-all duration-300 ${
+                            currentStep >= step.num
+                                ? "bg-indigo-600 text-white"
+                                : "bg-gray-100 dark:bg-gray-800 text-gray-400"
+                        }`}>
+                            <step.icon className="w-4 h-4" />
+                            <span className="text-xs font-bold hidden sm:block">{step.label}</span>
+                        </div>
+                        {i < steps.length - 1 && (
+                            <div className={`w-8 md:w-16 h-0.5 mx-1 transition-colors ${
+                                currentStep > step.num ? "bg-indigo-600" : "bg-gray-200 dark:bg-gray-700"
+                            }`} />
+                        )}
+                    </div>
+                ))}
+            </div>
 
-                <div className="relative z-10">
-                    <h1 className="text-4xl font-black mb-2 text-gray-900 dark:text-white flex items-center gap-3">
-                        <CreditCard className="w-10 h-10 text-indigo-500" />
+            <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 overflow-hidden"
+            >
+                {/* Header */}
+                <div className="p-6 md:p-8 border-b border-gray-100 dark:border-gray-800">
+                    <h1 className="text-2xl font-black text-gray-900 dark:text-white flex items-center gap-3">
+                        <CreditCard className="w-7 h-7 text-indigo-500" />
                         Checkout
                     </h1>
-                    <p className="text-gray-500 dark:text-gray-400 mb-10 font-medium">Selesaikan pembayaranmu dengan aman dan cepat.</p>
+                    <p className="text-sm text-gray-500 mt-1">Periksa pesananmu sebelum melakukan pembayaran.</p>
+                </div>
 
-                    <div className="space-y-6 mb-10">
-                        {items.map((item, idx) => (
-                            <motion.div 
-                                initial={{ opacity: 0, x: -20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                transition={{ delay: idx * 0.1 }}
-                                key={item.id} 
-                                className="flex justify-between items-center border-b border-gray-200 dark:border-gray-700/50 pb-6 group"
-                            >
-                                <div className="flex items-center gap-4">
-                                    <div className="w-12 h-12 bg-indigo-100 dark:bg-indigo-900/50 rounded-xl flex items-center justify-center text-indigo-600 dark:text-indigo-400 font-bold group-hover:scale-110 transition-transform">
-                                        {item.quantity}x
-                                    </div>
-                                    <div>
-                                        <h3 className="font-bold text-lg text-gray-800 dark:text-gray-100">{item.name}</h3>
-                                        <p className="text-gray-500 dark:text-gray-400 text-sm">Rp {new Intl.NumberFormat('id-ID').format(item.price)} / unit</p>
-                                    </div>
-                                </div>
-                                <p className="font-black text-xl text-gray-900 dark:text-white">
-                                    Rp {new Intl.NumberFormat('id-ID').format(item.price * item.quantity)}
-                                </p>
-                            </motion.div>
-                        ))}
+                {/* Items */}
+                <div className="p-6 md:p-8 space-y-4">
+                    {items.map((item, idx) => (
+                        <motion.div
+                            initial={{ opacity: 0, x: -16 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: idx * 0.05 }}
+                            key={item.id}
+                            className="flex items-center gap-4 pb-4 border-b border-gray-100 dark:border-gray-800 last:border-0"
+                        >
+                            <div className="w-14 h-14 bg-gray-100 dark:bg-gray-800 rounded-xl overflow-hidden flex-shrink-0">
+                                {item.image_url ? (
+                                    <img src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${item.image_url}`} alt={item.name} className="w-full h-full object-cover" />
+                                ) : (
+                                    <div className="w-full h-full flex items-center justify-center"><Package className="w-5 h-5 text-gray-400" /></div>
+                                )}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <h3 className="font-bold text-sm text-gray-900 dark:text-white truncate">{item.name}</h3>
+                                <p className="text-xs text-gray-500">{item.quantity}x Rp {new Intl.NumberFormat("id-ID").format(item.price)}</p>
+                            </div>
+                            <p className="font-black text-sm text-gray-900 dark:text-white">
+                                Rp {new Intl.NumberFormat("id-ID").format(item.price * item.quantity)}
+                            </p>
+                        </motion.div>
+                    ))}
+                </div>
+
+                {/* Shipping Info (UI) */}
+                <div className="px-6 md:px-8 pb-6">
+                    <div className="bg-gray-50 dark:bg-gray-800/50 rounded-2xl p-5 border border-gray-100 dark:border-gray-700">
+                        <div className="flex items-center gap-2 mb-3">
+                            <MapPin className="w-4 h-4 text-indigo-500" />
+                            <span className="text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Alamat Pengiriman</span>
+                        </div>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">
+                            Alamat default pengiriman akan digunakan. Fitur manajemen alamat segera hadir.
+                        </p>
+                    </div>
+                </div>
+
+                {/* Total & CTA */}
+                <div className="p-6 md:p-8 bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-gray-800/80 dark:to-gray-800/50 border-t border-indigo-100 dark:border-gray-700">
+                    {/* Security Badge */}
+                    <div className="flex items-center gap-2 mb-4">
+                        <Lock className="w-4 h-4 text-emerald-600" />
+                        <span className="text-xs font-bold text-emerald-700 dark:text-emerald-400">Pembayaran Aman & Terenkripsi</span>
                     </div>
 
-                    <div className="bg-gradient-to-r from-indigo-50 to-blue-50 dark:from-gray-800/80 dark:to-gray-800/50 p-8 rounded-3xl border border-indigo-100 dark:border-gray-700 relative overflow-hidden">
-                        <ShieldCheck className="absolute -right-4 -bottom-4 w-32 h-32 text-indigo-500/10 dark:text-white/5" />
-                        <div className="relative z-10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
-                            <div>
-                                <p className="text-indigo-600 dark:text-indigo-400 font-bold mb-1 uppercase tracking-wider text-sm">Total Pembayaran</p>
-                                <p className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400">
-                                    Rp {new Intl.NumberFormat('id-ID').format(totalPrice)}
-                                </p>
-                            </div>
-                            <motion.button
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                                onClick={handleCheckout}
-                                className="w-full sm:w-auto bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-8 py-4 rounded-2xl font-bold hover:shadow-xl hover:shadow-indigo-500/40 transition-all flex items-center justify-center gap-2"
-                            >
-                                <CreditCard className="w-5 h-5" />
-                                Bayar Sekarang
-                            </motion.button>
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
+                        <div>
+                            <p className="text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider mb-1">Total Pembayaran</p>
+                            <p className="text-3xl md:text-4xl font-black gradient-text-primary">
+                                Rp {new Intl.NumberFormat("id-ID").format(totalPrice)}
+                            </p>
                         </div>
+                        <motion.button
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            onClick={handleCheckout}
+                            disabled={isProcessing}
+                            className="w-full sm:w-auto btn-primary px-10 py-4 text-base flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+                        >
+                            {isProcessing ? (
+                                <>
+                                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                    Memproses...
+                                </>
+                            ) : (
+                                <>
+                                    <CreditCard className="w-5 h-5" />
+                                    Bayar Sekarang
+                                </>
+                            )}
+                        </motion.button>
                     </div>
                 </div>
             </motion.div>
-        </main>
+        </div>
     );
 }

@@ -11,7 +11,7 @@ export default function UsersPage() {
     const fetchUsers = async () => {
         const token = localStorage.getItem("token");
         try {
-            const res = await fetch("http://localhost:8000/api/admin/users", {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/users`, {
                 headers: { "Authorization": `Bearer ${token}` }
             });
             if (res.ok) setUsers(await res.json());
@@ -31,7 +31,7 @@ export default function UsersPage() {
 
         const token = localStorage.getItem("token");
         try {
-            const res = await fetch(`http://localhost:8000/api/admin/users/${userId}/role`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/users/${userId}/role`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -58,7 +58,7 @@ export default function UsersPage() {
 
         const token = localStorage.getItem("token");
         try {
-            const res = await fetch(`http://localhost:8000/api/admin/users/${userId}`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/users/${userId}`, {
                 method: "DELETE",
                 headers: {
                     "Authorization": `Bearer ${token}`
@@ -90,7 +90,7 @@ export default function UsersPage() {
         e.preventDefault();
         const token = localStorage.getItem("token");
         try {
-            const res = await fetch(`http://localhost:8000/api/admin/users/${editingUser.id}`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/users/${editingUser.id}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",

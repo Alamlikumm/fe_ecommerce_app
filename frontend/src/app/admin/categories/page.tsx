@@ -11,7 +11,7 @@ export default function CategoriesPage() {
     const fetchCategories = async () => {
         const token = localStorage.getItem("token");
         try {
-            const res = await fetch("http://localhost:8000/api/admin/categories", {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/categories`, {
                 headers: { "Authorization": `Bearer ${token}` }
             });
             if (res.ok) setCategories(await res.json());
@@ -30,8 +30,8 @@ export default function CategoriesPage() {
         
         try {
             const url = editingId 
-                ? `http://localhost:8000/api/admin/categories/${editingId}`
-                : `http://localhost:8000/api/admin/categories`;
+                ? `${process.env.NEXT_PUBLIC_API_URL}/admin/categories/${editingId}`
+                : `${process.env.NEXT_PUBLIC_API_URL}/admin/categories`;
                 
             const method = editingId ? "PUT" : "POST";
 
@@ -61,7 +61,7 @@ export default function CategoriesPage() {
         if (!confirm("Yakin ingin menghapus kategori ini?")) return;
         const token = localStorage.getItem("token");
         try {
-            const res = await fetch(`http://localhost:8000/api/admin/categories/${id}`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/categories/${id}`, {
                 method: "DELETE",
                 headers: { "Authorization": `Bearer ${token}` }
             });

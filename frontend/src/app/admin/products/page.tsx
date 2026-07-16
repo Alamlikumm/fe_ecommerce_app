@@ -23,7 +23,7 @@ export default function ProductsPage() {
 
     const fetchProducts = async () => {
         try {
-            const res = await fetch("http://localhost:8000/api/products");
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products`);
             if (res.ok) setProducts(await res.json());
         } catch (err) {}
     };
@@ -31,7 +31,7 @@ export default function ProductsPage() {
     const fetchCategories = async () => {
         const token = localStorage.getItem("token");
         try {
-            const res = await fetch("http://localhost:8000/api/admin/categories", {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/categories`, {
                 headers: { "Authorization": `Bearer ${token}` }
             });
             if (res.ok) setCategories(await res.json());
@@ -86,8 +86,8 @@ export default function ProductsPage() {
 
         try {
             const url = editingId 
-                ? `http://localhost:8000/api/admin/products/${editingId}`
-                : `http://localhost:8000/api/admin/products`;
+                ? `${process.env.NEXT_PUBLIC_API_URL}/admin/products/${editingId}`
+                : `${process.env.NEXT_PUBLIC_API_URL}/admin/products`;
                 
             // Untuk Update dengan FormData di PHP/Laravel, kita gunakan POST tapi tambahkan _method PUT
             if (editingId) {
@@ -120,7 +120,7 @@ export default function ProductsPage() {
         if (!confirm("Yakin ingin menghapus produk ini secara permanen?")) return;
         const token = localStorage.getItem("token");
         try {
-            const res = await fetch(`http://localhost:8000/api/admin/products/${id}`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/products/${id}`, {
                 method: "DELETE",
                 headers: { "Authorization": `Bearer ${token}` }
             });
@@ -162,7 +162,7 @@ export default function ProductsPage() {
                                 <tr key={p.id} className="hover:bg-gray-50">
                                     <td className="p-4">
                                         <div className="w-16 h-16 bg-gray-100 rounded-lg overflow-hidden border border-gray-200">
-                                            <img src={`http://localhost:8000${p.image_url || '/placeholder.png'}`} alt={p.name} className="w-full h-full object-cover" onError={(e: any) => e.target.src = "https://via.placeholder.com/150"} />
+                                            <img src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${p.image_url || '/placeholder.png'}`} alt={p.name} className="w-full h-full object-cover" onError={(e: any) => e.target.src = "https://via.placeholder.com/150"} />
                                         </div>
                                     </td>
                                     <td className="p-4">
