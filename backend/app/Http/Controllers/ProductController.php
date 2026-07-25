@@ -11,7 +11,7 @@ class ProductController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Product::with('category', 'reviews');
+        $query = Product::with('category');
 
         // Filter Pencarian (Nama Barang)
         if ($request->has('search') && $request->search != '') {
@@ -31,10 +31,13 @@ class ProductController extends Controller
             $query->where('price', '<=', $request->price_max);
         }
 
-        // Filter rating minimal
+        // Filter rating minimal (subquery)
         if ($request->has('min_rating') && $request->min_rating > 0) {
-            $query->whereHas('reviews', function ($q) use ($request) {
-                $q->selectRaw('AVG(rating)')->havingRaw('AVG(rating) >= ?', [$request->min_rating]);
+            $query->whereIn('id', function ($sub) use ($request) {
+                $sub->select('product_id')
+                    ->from('reviews')
+                    ->groupBy('product_id')
+                    ->havingRaw('AVG(rating) >= ?', [(float) $request->min_rating]);
             });
         }
 
