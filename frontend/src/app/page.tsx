@@ -255,17 +255,21 @@ export default function Home() {
           >
             <PackageX className="w-20 h-20 text-gray-200 dark:text-gray-700 mx-auto mb-6" />
             <h3 className="text-2xl font-black text-gray-900 dark:text-white mb-2">
-              Produk tidak ditemukan
+              {hasActiveFilters ? "Produk tidak ditemukan" : "Belum ada produk"}
             </h3>
             <p className="text-gray-500 dark:text-gray-400 max-w-md mx-auto">
-              Coba gunakan kata kunci lain atau hapus filter untuk menemukan produk yang kamu cari.
+              {hasActiveFilters
+                ? "Coba gunakan kata kunci lain atau hapus filter untuk menemukan produk yang kamu cari."
+                : "Belum ada produk yang tersedia saat ini."}
             </p>
-            <button
-              onClick={clearFilters}
-              className="mt-6 px-6 py-2.5 bg-indigo-600 text-white rounded-xl font-bold text-sm hover:bg-indigo-700 transition-colors"
-            >
-              Reset Filter
-            </button>
+            {hasActiveFilters && (
+              <button
+                onClick={clearFilters}
+                className="mt-6 px-6 py-2.5 bg-indigo-600 text-white rounded-xl font-bold text-sm hover:bg-indigo-700 transition-colors"
+              >
+                Reset Filter
+              </button>
+            )}
           </motion.div>
         )}
 
