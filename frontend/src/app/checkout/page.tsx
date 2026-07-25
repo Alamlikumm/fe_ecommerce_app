@@ -5,13 +5,25 @@ import { useCartStore } from "@/store/cartStore";
 import { useToastStore } from "@/store/toastStore";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
-import { CreditCard, ShoppingBag, ShieldCheck, Check, Package, MapPin, Truck, Lock, Tag, CheckCircle, Loader2, X } from "lucide-react";
+import { CreditCard, ShoppingBag, ShieldCheck, Check, Package, MapPin, Truck, Lock, Tag, CheckCircle, Loader2, X, ChevronDown } from "lucide-react";
 
 const steps = [
     { num: 1, label: "Ringkasan", icon: ShoppingBag },
     { num: 2, label: "Pengiriman", icon: Truck },
     { num: 3, label: "Pembayaran", icon: CreditCard },
 ];
+
+interface Address {
+    id: number;
+    label: string;
+    recipient_name: string;
+    phone: string;
+    address: string;
+    city: string;
+    province: string;
+    postal_code: string;
+    is_primary: boolean;
+}
 
 export default function CheckoutPage() {
     const { items, clearCart } = useCartStore();
@@ -20,15 +32,19 @@ export default function CheckoutPage() {
     const [currentStep, setCurrentStep] = useState(1);
     const [isProcessing, setIsProcessing] = useState(false);
     const [shippingAddress, setShippingAddress] = useState("");
+    const [addresses, setAddresses] = useState<Address[]>([]);
+    const [selectedAddressId, setSelectedAddressId] = useState<number | null>(null);
+    const [showAddressDropdown, setShowAddressDropdown] = useState(false);
 
-    // Shipping config
     const [shippingConfig, setShippingConfig] = useState({ free_shipping_threshold: 500000, default_shipping_cost: 15000 });
 
-    // Coupon state
     const [couponInput, setCouponInput] = useState("");
     const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; discount: number; type: string; value: number } | null>(null);
     const [couponLoading, setCouponLoading] = useState(false);
     const [couponError, setCouponError] = useState("");
+
+    const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+    const apiHeaders = { Authorization: `Bearer ${token}`, "Content-Type": "application/json", Accept: "application/json" };
 
     const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
     const shippingCost = subtotal >= shippingConfig.free_shipping_threshold ? 0 : shippingConfig.default_shipping_cost;
@@ -38,19 +54,14 @@ export default function CheckoutPage() {
     useEffect(() => {
         const snapScript = "https://app.sandbox.midtrans.com/snap/snap.js";
         const clientKey = "Mid-client-ZT62-Lz_-u-wE7_3";
-
         const script = document.createElement("script");
         script.src = snapScript;
         script.setAttribute("data-client-key", clientKey);
         script.async = true;
-
         document.body.appendChild(script);
-        return () => {
-            document.body.removeChild(script);
-        };
+        return () => { document.body.removeChild(script); };
     }, []);
 
-    // Fetch shipping config
     useEffect(() => {
         fetch(`${process.env.NEXT_PUBLIC_API_URL}/shipping-config`)
             .then((res) => res.json())
@@ -58,12 +69,34 @@ export default function CheckoutPage() {
             .catch(() => {});
     }, []);
 
-    // Apply coupon
+    useEffect(() => {
+        if (!token) return;
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/addresses`, { headers: apiHeaders })
+            .then((res) => res.json())
+            .then((data: Address[]) => {
+                setAddresses(data);
+                const primary = data.find((a) => a.is_primary);
+                if (primary) {
+                    setSelectedAddressId(primary.id);
+                    setShippingAddress(formatAddress(primary));
+                }
+            })
+            .catch(() => {});
+    }, [token]);
+
+    const formatAddress = (addr: Address) =>
+        `${addr.recipient_name} - ${addr.phone}\n${addr.address}\n${addr.city}, ${addr.province} ${addr.postal_code}`;
+
+    const selectAddress = (addr: Address) => {
+        setSelectedAddressId(addr.id);
+        setShippingAddress(formatAddress(addr));
+        setShowAddressDropdown(false);
+    };
+
     const handleApplyCoupon = async () => {
         if (!couponInput.trim()) return;
         setCouponLoading(true);
         setCouponError("");
-
         try {
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/coupons/apply`, {
                 method: "POST",
@@ -86,10 +119,14 @@ export default function CheckoutPage() {
     };
 
     const handleCheckout = async () => {
-        const token = localStorage.getItem("token");
         if (!token) {
             addToast({ type: "warning", title: "Login diperlukan", message: "Kamu harus login untuk checkout." });
             router.push("/login");
+            return;
+        }
+
+        if (!shippingAddress.trim()) {
+            addToast({ type: "warning", title: "Alamat diperlukan", message: "Isi alamat pengiriman." });
             return;
         }
 
@@ -99,20 +136,16 @@ export default function CheckoutPage() {
         try {
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/checkout`, {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
+                headers: apiHeaders,
                 body: JSON.stringify({
                     items: items.map((i) => ({ id: i.id, name: i.name, price: i.price, quantity: i.quantity })),
                     coupon_code: appliedCoupon?.code || null,
-                    shipping_address: shippingAddress || null,
+                    shipping_address: shippingAddress,
                 }),
             });
 
             if (res.ok) {
                 const data = await res.json();
-
                 (window as any).snap.pay(data.snap_token, {
                     onSuccess: function () {
                         addToast({ type: "success", title: "Pembayaran Berhasil! 🎉", message: "Pesananmu sedang diproses." });
@@ -222,31 +255,76 @@ export default function CheckoutPage() {
                     ))}
                 </div>
 
-                {/* Shipping Info */}
+                {/* Shipping Address with saved addresses */}
                 <div className="px-6 md:px-8 pb-6">
                     <div className="bg-gray-50 dark:bg-gray-800/50 rounded-2xl p-5 border border-gray-100 dark:border-gray-700">
                         <div className="flex items-center gap-2 mb-3">
                             <MapPin className="w-4 h-4 text-indigo-500" />
                             <span className="text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Alamat Pengiriman</span>
                         </div>
+
+                        {/* Saved Addresses */}
+                        {addresses.length > 0 && (
+                            <div className="relative mb-3">
+                                <button
+                                    type="button"
+                                    onClick={() => setShowAddressDropdown(!showAddressDropdown)}
+                                    className="w-full flex items-center justify-between px-4 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:outline-none transition-all"
+                                >
+                                    <span className="font-medium text-gray-700 dark:text-gray-300 truncate">
+                                        {selectedAddressId
+                                            ? addresses.find((a) => a.id === selectedAddressId)?.label || "Pilih alamat"
+                                            : "Pilih alamat tersimpan"}
+                                    </span>
+                                    <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${showAddressDropdown ? "rotate-180" : ""}`} />
+                                </button>
+
+                                {showAddressDropdown && (
+                                    <motion.div
+                                        initial={{ opacity: 0, y: -4 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        className="absolute z-20 mt-1 w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-xl overflow-hidden"
+                                    >
+                                        {addresses.map((addr) => (
+                                            <button
+                                                key={addr.id}
+                                                type="button"
+                                                onClick={() => selectAddress(addr)}
+                                                className={`w-full text-left px-4 py-3 border-b border-gray-100 dark:border-gray-700 last:border-0 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors ${
+                                                    selectedAddressId === addr.id ? "bg-indigo-50 dark:bg-indigo-900/20" : ""
+                                                }`}
+                                            >
+                                                <div className="flex items-center gap-2">
+                                                    <span className="font-bold text-sm text-gray-900 dark:text-white">{addr.label}</span>
+                                                    {addr.is_primary && <span className="badge badge-success text-[10px] py-0.5">Utama</span>}
+                                                </div>
+                                                <p className="text-xs text-gray-500 mt-0.5">{addr.recipient_name} - {addr.phone}</p>
+                                                <p className="text-xs text-gray-400 truncate">{addr.address}, {addr.city}</p>
+                                            </button>
+                                        ))}
+                                    </motion.div>
+                                )}
+                            </div>
+                        )}
+
                         <textarea
                             rows={2}
                             value={shippingAddress}
                             onChange={(e) => setShippingAddress(e.target.value)}
-                            placeholder="Masukkan alamat lengkap pengiriman..."
+                            placeholder="Atau masukkan alamat lengkap pengiriman manual..."
                             className="w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-3 text-sm focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:outline-none resize-none transition-all"
                         />
                     </div>
                 </div>
 
-                {/* Coupon Section */}
+                {/* Coupon */}
                 <div className="px-6 md:px-8 pb-6">
                     <div className="bg-gray-50 dark:bg-gray-800/50 rounded-2xl p-5 border border-gray-100 dark:border-gray-700">
                         <div className="flex items-center gap-2 mb-3">
                             <Tag className="w-4 h-4 text-indigo-500" />
                             <span className="text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Kode Promo</span>
                         </div>
-                        
+
                         {appliedCoupon ? (
                             <div className="flex items-center justify-between bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-xl px-4 py-3">
                                 <div className="flex items-center gap-2">
@@ -287,13 +365,11 @@ export default function CheckoutPage() {
 
                 {/* Total & CTA */}
                 <div className="p-6 md:p-8 bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-gray-800/80 dark:to-gray-800/50 border-t border-indigo-100 dark:border-gray-700">
-                    {/* Security Badge */}
                     <div className="flex items-center gap-2 mb-4">
                         <Lock className="w-4 h-4 text-emerald-600" />
                         <span className="text-xs font-bold text-emerald-700 dark:text-emerald-400">Pembayaran Aman & Terenkripsi</span>
                     </div>
 
-                    {/* Price Breakdown */}
                     <div className="space-y-2 mb-6">
                         <div className="flex justify-between text-sm">
                             <span className="text-gray-500">Subtotal</span>

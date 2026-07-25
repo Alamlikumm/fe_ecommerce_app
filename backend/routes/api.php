@@ -72,6 +72,12 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/admin/products/{id}', [ProductController::class, 'update']);
         Route::delete('/admin/products/{id}', [ProductController::class, 'destroy']);
 
+        // CRUD Varian Produk
+        Route::get('/admin/products/{productId}/variants', [App\Http\Controllers\VariantController::class, 'index']);
+        Route::post('/admin/products/{productId}/variants', [App\Http\Controllers\VariantController::class, 'store']);
+        Route::put('/admin/products/{productId}/variants/{id}', [App\Http\Controllers\VariantController::class, 'update']);
+        Route::delete('/admin/products/{productId}/variants/{id}', [App\Http\Controllers\VariantController::class, 'destroy']);
+
         // Manajemen User
         Route::get('/admin/users', [App\Http\Controllers\UserController::class, 'index']);
         Route::put('/admin/users/{id}/role', [App\Http\Controllers\UserController::class, 'updateRole']);

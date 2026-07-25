@@ -11,7 +11,7 @@ class ProductController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Product::with('category')->orderBy('created_at', 'desc');
+        $query = Product::with('category', 'reviews');
 
         // Filter Pencarian (Nama Barang)
         if ($request->has('search') && $request->search != '') {
@@ -23,13 +23,67 @@ class ProductController extends Controller
             $query->where('category_id', $request->category_id);
         }
 
-        $products = $query->get();
+        // Filter harga (range)
+        if ($request->has('price_min') && $request->price_min != '') {
+            $query->where('price', '>=', $request->price_min);
+        }
+        if ($request->has('price_max') && $request->price_max != '') {
+            $query->where('price', '<=', $request->price_max);
+        }
+
+        // Filter rating minimal
+        if ($request->has('min_rating') && $request->min_rating > 0) {
+            $query->whereHas('reviews', function ($q) use ($request) {
+                $q->selectRaw('AVG(rating)')->havingRaw('AVG(rating) >= ?', [$request->min_rating]);
+            });
+        }
+
+        // Sorting
+        $sortField = 'created_at';
+        $sortDir = 'desc';
+
+        if ($request->has('sort')) {
+            switch ($request->sort) {
+                case 'price_asc':
+                    $sortField = 'price';
+                    $sortDir = 'asc';
+                    break;
+                case 'price_desc':
+                    $sortField = 'price';
+                    $sortDir = 'desc';
+                    break;
+                case 'name_asc':
+                    $sortField = 'name';
+                    $sortDir = 'asc';
+                    break;
+                case 'name_desc':
+                    $sortField = 'name';
+                    $sortDir = 'desc';
+                    break;
+                case 'newest':
+                default:
+                    $sortField = 'created_at';
+                    $sortDir = 'desc';
+                    break;
+            }
+        }
+
+        $query->orderBy($sortField, $sortDir);
+
+        // Pagination
+        if ($request->has('all') && $request->all) {
+            $products = $query->get();
+        } else {
+            $perPage = min((int) $request->per_page ?: 20, 100);
+            $products = $query->paginate($perPage);
+        }
+
         return response()->json($products);
     }
 
     public function show($id)
     {
-        $product = Product::with(['category', 'reviews.user'])->findOrFail($id);
+        $product = Product::with(['category', 'reviews.user', 'variants'])->findOrFail($id);
         return response()->json($product);
     }
 

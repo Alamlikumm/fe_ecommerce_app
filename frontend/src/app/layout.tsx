@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ToastContainer from "@/components/Toast";
+import ThemeInit from "@/components/ThemeInit";
 
 const inter = Inter({
   variable: "--font-geist-sans",
@@ -40,6 +41,7 @@ export default function RootLayout({
       className={`${inter.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className={`${inter.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}>
+        <ThemeInit />
         <Navbar />
         <main className="flex-1">{children}</main>
         <Footer />

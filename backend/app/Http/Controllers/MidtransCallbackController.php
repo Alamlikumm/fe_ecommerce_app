@@ -76,6 +76,23 @@ class MidtransCallbackController extends Controller
                     'description' => $timelineDescriptions[$order->status],
                 ]);
             }
+
+            // Kurangi stok produk jika status menjadi 'paid'
+            if ($order->status === 'paid' && $oldStatus !== 'paid') {
+                foreach ($order->items as $item) {
+                    $product = $item->product;
+                    if ($product) {
+                        $product->decrement('stock', $item->quantity);
+                    }
+                    // Kurangi juga stok variant jika ada
+                    if ($item->variant_id) {
+                        $variant = \App\Models\ProductVariant::find($item->variant_id);
+                        if ($variant) {
+                            $variant->decrement('stock', $item->quantity);
+                        }
+                    }
+                }
+            }
         }
 
         Log::info('Midtrans callback berhasil diproses', [

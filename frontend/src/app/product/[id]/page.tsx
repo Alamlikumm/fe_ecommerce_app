@@ -18,6 +18,10 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
     const [activeImageZoom, setActiveImageZoom] = useState(false);
     const router = useRouter();
 
+    // Variant state
+    const [selectedVariants, setSelectedVariants] = useState<Record<string, any>>({});
+    const [activeVariant, setActiveVariant] = useState<any>(null);
+
     // Review form state
     const [rating, setRating] = useState(5);
     const [comment, setComment] = useState("");
@@ -83,14 +87,24 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
         }
     };
 
+    const getEffectivePrice = () => product.price + (activeVariant?.price_adjustment || 0);
+
+    const getCartProduct = () => ({
+        ...product,
+        price: getEffectivePrice(),
+        variant: activeVariant ? { id: activeVariant.id, name: activeVariant.name, value: activeVariant.value } : null,
+    });
+
     const handleBuyNow = () => {
-        for (let i = 0; i < quantity; i++) addToCart(product);
+        const cartProduct = getCartProduct();
+        for (let i = 0; i < quantity; i++) addToCart(cartProduct);
         router.push("/checkout");
     };
 
     const handleAddToCart = () => {
-        for (let i = 0; i < quantity; i++) addToCart(product);
-        addToast({ type: "success", title: `${quantity}x Ditambahkan ke Keranjang! 🛒`, message: product.name });
+        const cartProduct = getCartProduct();
+        for (let i = 0; i < quantity; i++) addToCart(cartProduct);
+        addToast({ type: "success", title: `${quantity}x Ditambahkan ke Keranjang! 🛒`, message: cartProduct.name });
     };
 
     const handleShare = () => {
@@ -221,9 +235,48 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                                 </button>
                             </div>
 
+                            {/* Variants */}
+                            {product.variants && product.variants.length > 0 && (
+                                <div className="mb-6 space-y-3">
+                                    {Object.entries(
+                                        product.variants.reduce((acc: any, v: any) => {
+                                            if (!acc[v.type]) acc[v.type] = [];
+                                            acc[v.type].push(v);
+                                            return acc;
+                                        }, {} as Record<string, any[]>)
+                                    ).map(([type, items]: any) => (
+                                        <div key={type}>
+                                            <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">{type}</p>
+                                            <div className="flex flex-wrap gap-2">
+                                                {items.map((v: any) => {
+                                                    const isSelected = selectedVariants[type]?.id === v.id;
+                                                    return (
+                                                        <button
+                                                            key={v.id}
+                                                            onClick={() => {
+                                                                const newSel = { ...selectedVariants, [type]: v };
+                                                                setSelectedVariants(newSel);
+                                                                setActiveVariant(v);
+                                                            }}
+                                                            className={`px-4 py-2 rounded-xl text-sm font-bold border-2 transition-all ${
+                                                                isSelected
+                                                                    ? "bg-indigo-600 text-white border-indigo-600 shadow-lg shadow-indigo-500/20"
+                                                                    : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700 hover:border-indigo-300 dark:hover:border-indigo-600"
+                                                            }`}
+                                                        >
+                                                            {v.value}
+                                                        </button>
+                                                    );
+                                                })}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+
                             {/* Price */}
                             <p className="text-3xl md:text-4xl font-black gradient-text-warm mb-6">
-                                Rp {new Intl.NumberFormat("id-ID").format(product.price)}
+                                Rp {new Intl.NumberFormat("id-ID").format(product.price + (activeVariant?.price_adjustment || 0))}
                             </p>
 
                             {/* Description */}
@@ -433,7 +486,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                     <div className="flex-1">
                         <p className="text-xs text-gray-500">Harga</p>
                         <p className="text-lg font-black gradient-text-warm">
-                            Rp {new Intl.NumberFormat("id-ID").format(product.price)}
+                            Rp {new Intl.NumberFormat("id-ID").format(getEffectivePrice())}
                         </p>
                     </div>
                     <button

@@ -4,7 +4,8 @@ import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
 import { useCartStore } from "@/store/cartStore";
 import { useWishlistStore } from "@/store/wishlistStore";
-import { ShoppingCart, User, LogIn, Search, Menu, X, ChevronDown, Package, Heart, Bell } from "lucide-react";
+import { useThemeStore } from "@/store/themeStore";
+import { ShoppingCart, User, LogIn, Search, Menu, X, ChevronDown, Package, Heart, Bell, Sun, Moon } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function Navbar() {
@@ -13,6 +14,7 @@ export default function Navbar() {
     const wishlistIds = useWishlistStore((s) => s.ids);
     const setWishlistIds = useWishlistStore((s) => s.setIds);
     const totalPrice = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    const { isDark, toggle: toggleTheme } = useThemeStore();
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [userName, setUserName] = useState("");
     const [scrolled, setScrolled] = useState(false);
@@ -34,7 +36,6 @@ export default function Navbar() {
                 })
                 .catch(() => {});
 
-            // Sync wishlist IDs dari server
             fetch(`${process.env.NEXT_PUBLIC_API_URL}/wishlist/ids`, {
                 headers: { Authorization: `Bearer ${token}`, Accept: "application/json" },
             })
@@ -50,7 +51,6 @@ export default function Navbar() {
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
-    // Close cart preview on outside click
     useEffect(() => {
         const handleClick = (e: MouseEvent) => {
             if (cartRef.current && !cartRef.current.contains(e.target as Node)) {
@@ -90,7 +90,7 @@ export default function Navbar() {
                                 className="w-full pl-11 pr-4 py-2.5 bg-gray-100 dark:bg-gray-800 border border-transparent focus:border-indigo-500 rounded-2xl text-sm focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all placeholder:text-gray-400"
                                 onKeyDown={(e) => {
                                     if (e.key === "Enter") {
-                                        // Could redirect to homepage with search param
+                                        window.location.href = `/?search=${encodeURIComponent((e.target as HTMLInputElement).value)}`;
                                     }
                                 }}
                             />
@@ -99,6 +99,15 @@ export default function Navbar() {
 
                     {/* Actions */}
                     <div className="flex items-center gap-1 md:gap-2">
+                        {/* Theme Toggle */}
+                        <button
+                            onClick={toggleTheme}
+                            className="p-2.5 rounded-xl text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                            title={isDark ? "Mode Terang" : "Mode Gelap"}
+                        >
+                            {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+                        </button>
+
                         {/* Wishlist */}
                         <Link
                             href="/wishlist"
@@ -271,8 +280,21 @@ export default function Navbar() {
                                         type="text"
                                         placeholder="Cari produk..."
                                         className="w-full pl-10 pr-4 py-2.5 bg-gray-100 dark:bg-gray-800 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                                        onKeyDown={(e) => {
+                                            if (e.key === "Enter") {
+                                                window.location.href = `/?search=${encodeURIComponent((e.target as HTMLInputElement).value)}`;
+                                            }
+                                        }}
                                     />
                                 </div>
+
+                                <button
+                                    onClick={() => { toggleTheme(); setMobileMenuOpen(false); }}
+                                    className="flex items-center gap-3 w-full px-4 py-3 rounded-xl text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                                >
+                                    {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+                                    <span className="font-bold text-sm">{isDark ? "Mode Terang" : "Mode Gelap"}</span>
+                                </button>
 
                                 {isLoggedIn ? (
                                     <Link
