@@ -54,9 +54,11 @@ export default function AdminDashboard() {
     const [stats, setStats] = useState<any>(null);
     const [recentOrders, setRecentOrders] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const [dashboardError, setDashboardError] = useState("");
 
     useEffect(() => {
         const token = localStorage.getItem("token");
+        setDashboardError("");
         Promise.all([
             fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/dashboard-stats`, {
                 headers: { Authorization: `Bearer ${token}` },
@@ -67,9 +69,10 @@ export default function AdminDashboard() {
         ])
             .then(([statsData, ordersData]) => {
                 setStats(statsData);
-                setRecentOrders(ordersData.slice(0, 5));
+                const orders = Array.isArray(ordersData) ? ordersData : ordersData.data || [];
+                setRecentOrders(orders.slice(0, 5));
             })
-            .catch(console.error)
+            .catch(() => setDashboardError("Gagal memuat data dashboard"))
             .finally(() => setLoading(false));
     }, []);
 
@@ -80,6 +83,17 @@ export default function AdminDashboard() {
                     {[1, 2, 3].map((i) => <div key={i} className="h-32 shimmer rounded-2xl" />)}
                 </div>
                 <div className="h-80 shimmer rounded-2xl" />
+            </div>
+        );
+    }
+
+    if (dashboardError) {
+        return (
+            <div className="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 p-6 rounded-2xl border border-red-200 dark:border-red-800 text-center">
+                <p className="font-bold text-lg mb-2">{dashboardError}</p>
+                <button onClick={() => window.location.reload()} className="px-4 py-2 bg-red-600 text-white rounded-xl text-sm font-bold hover:bg-red-700 transition-colors">
+                    Muat Ulang
+                </button>
             </div>
         );
     }

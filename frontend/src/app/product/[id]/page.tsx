@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
+import { getImageUrl } from "@/lib/utils";
 import AddToCartButton from "@/components/AddToCartButton";
 import ProductCard, { ProductCardSkeleton } from "@/components/ProductCard";
 import { Star, ChevronRight, Home, Share2, Shield, Truck, RotateCcw, Minus, Plus, PackageX } from "lucide-react";
@@ -30,23 +31,43 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
     const addToCart = useCartStore((s) => s.addToCart);
     const addToast = useToastStore((s) => s.addToast);
 
-    const fetchProduct = () => {
-        fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/${params.id}`)
-            .then((res) => res.json())
-            .then((data) => {
-                setProduct(data);
-                setLoading(false);
-                // Fetch related products from same category
-                if (data.category_id) {
-                    fetch(`${process.env.NEXT_PUBLIC_API_URL}/products?category_id=${data.category_id}`)
-                        .then((res) => res.json())
-                        .then((relData) => {
-                            setRelatedProducts(relData.filter((p: any) => p.id !== data.id).slice(0, 5));
-                        })
-                        .catch(() => {});
+    const [fetchError, setFetchError] = useState("");
+    const [notFound, setNotFound] = useState(false);
+
+    const fetchProduct = async () => {
+        setLoading(true);
+        setFetchError("");
+        setNotFound(false);
+        try {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/${params.id}`);
+            if (!res.ok) {
+                if (res.status === 404) {
+                    setNotFound(true);
+                    setLoading(false);
+                    return;
                 }
-            })
-            .catch(() => setLoading(false));
+                throw new Error(`HTTP ${res.status}`);
+            }
+            const data = await res.json();
+            setProduct(data);
+            setLoading(false);
+
+            if (data.category_id) {
+                fetch(`${process.env.NEXT_PUBLIC_API_URL}/products?category_id=${data.category_id}`)
+                    .then((r) => r.json())
+                    .then((relData) => {
+                        setRelatedProducts(
+                            (Array.isArray(relData) ? relData : relData.data || [])
+                                .filter((p: any) => p.id !== data.id)
+                                .slice(0, 5)
+                        );
+                    })
+                    .catch(() => {});
+            }
+        } catch (err) {
+            setFetchError(err instanceof Error ? err.message : "Gagal memuat produk");
+            setLoading(false);
+        }
     };
 
     useEffect(() => {
@@ -130,13 +151,28 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
         );
     }
 
-    if (!product || !product.id)
+    if (notFound)
         return (
             <div className="min-h-[60vh] flex flex-col items-center justify-center">
                 <PackageX className="w-20 h-20 text-gray-300 mb-4" />
                 <h2 className="text-2xl font-black text-gray-900 dark:text-white">Produk tidak ditemukan</h2>
+                <p className="text-gray-500 mt-2">Produk yang kamu cari tidak tersedia atau telah dihapus.</p>
             </div>
         );
+
+    if (fetchError)
+        return (
+            <div className="min-h-[60vh] flex flex-col items-center justify-center">
+                <PackageX className="w-20 h-20 text-red-300 mb-4" />
+                <h2 className="text-2xl font-black text-gray-900 dark:text-white mb-2">Gagal memuat produk</h2>
+                <p className="text-gray-500 mb-6">{fetchError}</p>
+                <button onClick={fetchProduct} className="px-6 py-2.5 bg-indigo-600 text-white rounded-xl font-bold text-sm hover:bg-indigo-700 transition-colors">
+                    Coba Lagi
+                </button>
+            </div>
+        );
+
+    if (!product || !product.id) return null;
 
     const averageRating =
         product.reviews && product.reviews.length > 0
@@ -182,7 +218,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                             >
                                 {product.image_url ? (
                                     <img
-                                        src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${product.image_url}`}
+                                        src={getImageUrl(product.image_url)}
                                         alt={product.name}
                                         className={`w-full h-full object-cover transition-transform duration-700 ${activeImageZoom ? "scale-125" : "scale-100"}`}
                                         onError={(e: any) => (e.target.style.display = "none")}

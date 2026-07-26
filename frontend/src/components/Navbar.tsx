@@ -6,6 +6,7 @@ import { useCartStore } from "@/store/cartStore";
 import { useWishlistStore } from "@/store/wishlistStore";
 import { useThemeStore } from "@/store/themeStore";
 import { ShoppingCart, User, LogIn, Search, Menu, X, ChevronDown, Package, Heart, Bell, Sun, Moon } from "lucide-react";
+import { getImageUrl } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function Navbar() {
@@ -208,7 +209,7 @@ export default function Navbar() {
                                                             <div className="w-12 h-12 bg-gray-100 dark:bg-gray-800 rounded-xl overflow-hidden flex-shrink-0">
                                                                 {item.image_url ? (
                                                                     <img
-                                                                        src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${item.image_url}`}
+                                                                        src={getImageUrl(item.image_url)}
                                                                         alt={item.name}
                                                                         className="w-full h-full object-cover"
                                                                     />

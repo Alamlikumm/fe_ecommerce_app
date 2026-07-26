@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Heart, ShoppingBag, Trash2, Package, Star, ArrowLeft, Loader2 } from "lucide-react";
+import { getImageUrl } from "@/lib/utils";
 import Link from "next/link";
 import { useCartStore } from "@/store/cartStore";
 import { useToastStore } from "@/store/toastStore";
@@ -126,7 +127,7 @@ export default function WishlistPage() {
                                     <div className="bg-gray-100 dark:bg-gray-800 w-full h-full">
                                         {product.image_url ? (
                                             <img
-                                                src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${product.image_url}`}
+                                                src={getImageUrl(product.image_url)}
                                                 alt={product.name}
                                                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                                                 onError={(e: any) => (e.target.style.display = "none")}

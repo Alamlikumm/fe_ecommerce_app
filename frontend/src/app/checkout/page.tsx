@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import { useCartStore } from "@/store/cartStore";
 import { useToastStore } from "@/store/toastStore";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { getImageUrl } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { CreditCard, ShoppingBag, ShieldCheck, Check, Package, MapPin, Truck, Lock, Tag, CheckCircle, Loader2, X, ChevronDown } from "lucide-react";
 
@@ -42,6 +43,7 @@ export default function CheckoutPage() {
     const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; discount: number; type: string; value: number } | null>(null);
     const [couponLoading, setCouponLoading] = useState(false);
     const [couponError, setCouponError] = useState("");
+    const [snapReady, setSnapReady] = useState(false);
 
     const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
     const apiHeaders = { Authorization: `Bearer ${token}`, "Content-Type": "application/json", Accept: "application/json" };
@@ -53,11 +55,12 @@ export default function CheckoutPage() {
 
     useEffect(() => {
         const snapScript = "https://app.sandbox.midtrans.com/snap/snap.js";
-        const clientKey = "Mid-client-ZT62-Lz_-u-wE7_3";
+        const clientKey = process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY || "Mid-client-ZT62-Lz_-u-wE7_3";
         const script = document.createElement("script");
         script.src = snapScript;
         script.setAttribute("data-client-key", clientKey);
         script.async = true;
+        script.onload = () => setSnapReady(true);
         document.body.appendChild(script);
         return () => { document.body.removeChild(script); };
     }, []);
@@ -146,6 +149,11 @@ export default function CheckoutPage() {
 
             if (res.ok) {
                 const data = await res.json();
+                if (!snapReady && typeof (window as any).snap === "undefined") {
+                    addToast({ type: "error", title: "Pembayaran Gagal", message: "Snap Midtrans belum siap. Silakan coba lagi." });
+                    setIsProcessing(false);
+                    return;
+                }
                 (window as any).snap.pay(data.snap_token, {
                     onSuccess: function () {
                         addToast({ type: "success", title: "Pembayaran Berhasil! 🎉", message: "Pesananmu sedang diproses." });
@@ -239,7 +247,7 @@ export default function CheckoutPage() {
                         >
                             <div className="w-14 h-14 bg-gray-100 dark:bg-gray-800 rounded-xl overflow-hidden flex-shrink-0">
                                 {item.image_url ? (
-                                    <img src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${item.image_url}`} alt={item.name} className="w-full h-full object-cover" />
+                                    <img src={getImageUrl(item.image_url)} alt={item.name} className="w-full h-full object-cover" />
                                 ) : (
                                     <div className="w-full h-full flex items-center justify-center"><Package className="w-5 h-5 text-gray-400" /></div>
                                 )}

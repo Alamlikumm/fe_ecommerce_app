@@ -6,6 +6,7 @@ import { ShoppingCart, Star, Eye, PackageX, Heart } from "lucide-react";
 import { useCartStore } from "@/store/cartStore";
 import { useToastStore } from "@/store/toastStore";
 import { useWishlistStore } from "@/store/wishlistStore";
+import { getImageUrl } from "@/lib/utils";
 
 interface ProductCardProps {
     product: any;
@@ -86,7 +87,7 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
                 <div className="bg-gray-100 dark:bg-gray-800 w-full h-full">
                     {product.image_url ? (
                         <img
-                            src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${product.image_url}`}
+                            src={getImageUrl(product.image_url)}
                             alt={product.name}
                             className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
                             onError={(e: any) => (e.target.style.display = "none")}

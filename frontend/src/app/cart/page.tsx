@@ -4,6 +4,7 @@ import { useCartStore } from "@/store/cartStore";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
+import { getImageUrl } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { Minus, Plus, Trash2, ShoppingBag, ArrowLeft, Truck, Tag, Package, X, CheckCircle, Loader2 } from "lucide-react";
 import { useToastStore } from "@/store/toastStore";
@@ -123,7 +124,7 @@ export default function CartPage() {
                                     <div className="w-20 h-20 md:w-24 md:h-24 bg-gray-100 dark:bg-gray-800 rounded-xl overflow-hidden flex-shrink-0">
                                         {item.image_url ? (
                                             <img
-                                                src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${item.image_url}`}
+                                                src={getImageUrl(item.image_url)}
                                                 alt={item.name}
                                                 className="w-full h-full object-cover"
                                                 onError={(e: any) => (e.target.style.display = "none")}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { motion } from "framer-motion";
 import { Search, PackageX, SlidersHorizontal, ArrowUpDown, ChevronLeft, ChevronRight, X } from "lucide-react";
 import HeroBanner from "@/components/HeroBanner";
@@ -11,8 +11,11 @@ export default function Home() {
   const [products, setProducts] = useState<any[]>([]);
   const [categories, setCategories] = useState([]);
   const [search, setSearch] = useState("");
+  const [searchInput, setSearchInput] = useState("");
+  const searchTimer = useRef<NodeJS.Timeout | null>(null);
   const [categoryId, setCategoryId] = useState("");
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   // Pagination
   const [page, setPage] = useState(1);
@@ -30,6 +33,7 @@ export default function Home() {
 
   const fetchProducts = useCallback(async () => {
     setLoading(true);
+    setError("");
     const params = new URLSearchParams();
     if (search) params.append("search", search);
     if (categoryId) params.append("category_id", categoryId);
@@ -42,6 +46,11 @@ export default function Home() {
 
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products?${params.toString()}`);
+
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}`);
+      }
+
       const data = await res.json();
 
       if (data.data) {
@@ -54,7 +63,7 @@ export default function Home() {
         setTotal(data.length);
       }
     } catch (err) {
-      console.error(err);
+      setError(err instanceof Error ? err.message : "Gagal memuat produk");
     } finally {
       setLoading(false);
     }
@@ -71,6 +80,13 @@ export default function Home() {
     fetchProducts();
   }, [fetchProducts]);
 
+  // Debounce search input
+  useEffect(() => {
+    if (searchTimer.current) clearTimeout(searchTimer.current);
+    searchTimer.current = setTimeout(() => setSearch(searchInput), 300);
+    return () => { if (searchTimer.current) clearTimeout(searchTimer.current); };
+  }, [searchInput]);
+
   // Reset page when filters change
   useEffect(() => {
     setPage(1);
@@ -78,6 +94,7 @@ export default function Home() {
 
   const clearFilters = () => {
     setSearch("");
+    setSearchInput("");
     setCategoryId("");
     setSort("newest");
     setPriceMin("");
@@ -131,13 +148,13 @@ export default function Home() {
         >
           <div className="relative flex-1 group">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-indigo-500 transition-colors w-4 h-4" />
-            <input
-              type="text"
-              placeholder="Cari nama produk..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-11 pr-4 py-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:outline-none text-sm transition-all placeholder:text-gray-400"
-            />
+              <input
+                  type="text"
+                  placeholder="Cari nama produk..."
+                  value={searchInput}
+                  onChange={(e) => setSearchInput(e.target.value)}
+                  className="w-full pl-11 pr-4 py-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:outline-none text-sm transition-all placeholder:text-gray-400"
+                />
           </div>
 
           {/* Sort */}
@@ -246,8 +263,31 @@ export default function Home() {
           </div>
         )}
 
+        {/* Error State */}
+        {!loading && error && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="text-center py-24 bg-white dark:bg-gray-900 rounded-3xl border border-red-100 dark:border-red-900/30"
+          >
+            <PackageX className="w-20 h-20 text-red-300 dark:text-red-700 mx-auto mb-6" />
+            <h3 className="text-2xl font-black text-gray-900 dark:text-white mb-2">
+              Gagal memuat produk
+            </h3>
+            <p className="text-gray-500 dark:text-gray-400 max-w-md mx-auto mb-6">
+              {error}
+            </p>
+            <button
+              onClick={fetchProducts}
+              className="px-6 py-2.5 bg-indigo-600 text-white rounded-xl font-bold text-sm hover:bg-indigo-700 transition-colors"
+            >
+              Coba Lagi
+            </button>
+          </motion.div>
+        )}
+
         {/* Empty State */}
-        {!loading && products.length === 0 && (
+        {!loading && !error && products.length === 0 && (
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}

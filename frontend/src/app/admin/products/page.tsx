@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, X, Loader2, Package, Pencil, Trash2, Layers } from "lucide-react";
 import { useToastStore } from "@/store/toastStore";
+import { getImageUrl } from "@/lib/utils";
 
 interface Variant {
     id?: number;
@@ -193,9 +194,9 @@ export default function ProductsPage() {
                                 <tr key={p.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/30 transition-colors">
                                     <td className="p-4">
                                         <div className="w-14 h-14 bg-gray-100 dark:bg-gray-800 rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700">
-                                            <img src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${p.image_url || ''}`} alt={p.name}
+                                            <img src={getImageUrl(p.image_url)} alt={p.name}
                                                 className="w-full h-full object-cover"
-                                                onError={(e: any) => { e.target.style.display = "none"; (e.target.parentNode as HTMLElement).innerHTML = '<div class="w-full h-full flex items-center justify-center"><svg class="w-5 h-5 text-gray-400" ...></div>'; }}
+                                                onError={(e: any) => { (e.target as HTMLImageElement).style.display = "none"; }}
                                             />
                                         </div>
                                     </td>

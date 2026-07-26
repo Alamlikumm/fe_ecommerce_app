@@ -68,6 +68,8 @@ export default function ProfilePage() {
   const [editingAddress, setEditingAddress] = useState<Address | null>(null);
   const [addressForm, setAddressForm] = useState(emptyForm);
   const [savingAddress, setSavingAddress] = useState(false);
+  const [profileName, setProfileName] = useState("");
+  const [profileSaving, setProfileSaving] = useState(false);
   const router = useRouter();
   const addToast = useToastStore((s) => s.addToast);
   const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
@@ -88,6 +90,7 @@ export default function ProfilePage() {
     ])
       .then(([userData, ordersData, addrData]) => {
         setUser(userData);
+        setProfileName(userData.name || "");
         setOrders(ordersData);
         setAddresses(addrData);
         setLoading(false);
@@ -98,6 +101,30 @@ export default function ProfilePage() {
   const handleLogout = () => {
     localStorage.removeItem("token");
     router.push("/login");
+  };
+
+  const handleUpdateProfile = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!token) return;
+    setProfileSaving(true);
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user`, {
+        method: "PUT",
+        headers: apiHeaders,
+        body: JSON.stringify({ name: profileName }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        addToast({ type: "success", title: "Berhasil!", message: data.message || "Profil berhasil diperbarui." });
+        setUser((prev: any) => ({ ...prev, name: profileName }));
+      } else {
+        addToast({ type: "error", title: "Gagal", message: data.message || "Terjadi kesalahan." });
+      }
+    } catch {
+      addToast({ type: "error", title: "Kesalahan Jaringan", message: "Tidak bisa menghubungi server." });
+    } finally {
+      setProfileSaving(false);
+    }
   };
 
   // Address CRUD
@@ -647,21 +674,21 @@ export default function ProfilePage() {
                   Pengaturan Akun
                 </h2>
                 <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-6">
-                  <div className="space-y-5">
+                  <form onSubmit={handleUpdateProfile} className="space-y-5">
                     <div>
                       <label className="block text-xs font-bold text-gray-600 dark:text-gray-400 mb-2 uppercase tracking-wider">Nama</label>
-                      <input type="text" defaultValue={user.name}
+                      <input type="text" value={profileName} onChange={(e) => setProfileName(e.target.value)}
                         className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:outline-none" />
                     </div>
                     <div>
                       <label className="block text-xs font-bold text-gray-600 dark:text-gray-400 mb-2 uppercase tracking-wider">Email</label>
-                      <input type="email" defaultValue={user.email} disabled
+                      <input type="email" value={user.email} disabled
                         className="w-full px-4 py-3 bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm text-gray-500 cursor-not-allowed" />
                     </div>
-                    <button className="btn-primary py-3 px-6 text-sm">
-                      Simpan Perubahan
+                    <button type="submit" disabled={profileSaving} className="btn-primary py-3 px-6 text-sm disabled:opacity-50">
+                      {profileSaving ? "Menyimpan..." : "Simpan Perubahan"}
                     </button>
-                  </div>
+                  </form>
                 </div>
               </motion.div>
             )}

@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { getImageUrl } from "@/lib/utils";
 import {
   ArrowLeft, Package, ChevronRight, Calendar, MapPin, Truck,
   CreditCard, Check, Clock, Loader2, PackageX, ShoppingBag, Home

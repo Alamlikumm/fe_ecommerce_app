@@ -166,7 +166,7 @@ export default function AdminOrders() {
                     </td>
                     <td className="p-4">
                       <div className="flex flex-col gap-1">
-                        {order.items.map((item: any) => (
+                        {(order.items || []).map((item: any) => (
                           <div key={item.id} className="flex gap-2">
                             <span className="text-gray-500">{item.quantity}x</span>
                             <span className="font-bold text-gray-700 dark:text-gray-300">{item.product?.name || "Produk dihapus"}</span>
