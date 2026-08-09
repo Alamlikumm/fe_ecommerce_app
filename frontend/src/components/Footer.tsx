@@ -110,6 +110,17 @@ export default function Footer() {
                                     <li key={link.label}>
                                         <Link
                                             href={link.href}
+                                            onClick={(e) => {
+                                                if (link.href === "#") {
+                                                    e.preventDefault();
+                                                    const { useToastStore } = require("@/store/toastStore");
+                                                    useToastStore.getState().addToast({
+                                                        type: "info",
+                                                        title: "Segera Hadir",
+                                                        message: "Halaman ini masih dalam tahap pengembangan."
+                                                    });
+                                                }
+                                            }}
                                             className="text-sm text-gray-400 hover:text-indigo-400 transition-colors"
                                         >
                                             {link.label}
