@@ -135,7 +135,7 @@ export default function AdminDashboard() {
                 cornerRadius: 12,
                 displayColors: false,
                 callbacks: {
-                    label: (ctx: { raw: number }) => `Rp ${new Intl.NumberFormat("id-ID").format(ctx.raw)}`,
+                    label: (ctx: any) => `Rp ${new Intl.NumberFormat("id-ID").format(ctx.raw)}`,
                 },
             },
         },

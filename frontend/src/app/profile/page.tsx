@@ -118,7 +118,7 @@ export default function ProfilePage() {
       const data = await res.json();
       if (res.ok) {
         addToast({ type: "success", title: "Berhasil!", message: data.message || "Profil berhasil diperbarui." });
-        setUser((prev) => (prev ? { ...prev, name: profileName } : null));
+        setUser((prev: any) => (prev ? { ...prev, name: profileName } : null));
       } else {
         addToast({ type: "error", title: "Gagal", message: data.message || "Terjadi kesalahan." });
       }

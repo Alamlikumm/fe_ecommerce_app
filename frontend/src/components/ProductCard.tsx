@@ -151,7 +151,7 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
                                 <Star className="w-3 h-3 text-amber-500 fill-amber-500" />
                                 <span className="text-xs font-bold text-amber-700 dark:text-amber-400">{averageRating}</span>
                             </div>
-                            <span className="text-xs text-gray-400">({product.reviews.length})</span>
+                            <span className="text-xs text-gray-400">({product.reviews?.length || 0})</span>
                         </>
                     ) : (
                         <span className="text-xs text-gray-400">Belum ada ulasan</span>

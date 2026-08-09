@@ -6,7 +6,7 @@ import { useToastStore } from "@/store/toastStore";
 export default function CategoriesPage() {
     const [categories, setCategories] = useState([]);
     const [name, setName] = useState("");
-    const [editingId, setEditingId] = useState(null);
+    const [editingId, setEditingId] = useState<number | null>(null);
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(true);
     const addToast = useToastStore((s) => s.addToast);
