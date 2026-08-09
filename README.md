@@ -79,5 +79,5 @@ Proyek ini telah dikonfigurasi untuk kemudahan *deployment*:
 
 ## 👨‍💻 Pengembang
 Dikembangkan oleh **Achmad Darussalam Ridho**.
-- LinkedIn: [Profil Anda]
-- Portofolio: [Link Portofolio Anda]
+- LinkedIn: [https://www.linkedin.com/in/achmad-darussalam-ridho-65b0a3209/]
+- Portofolio: [https://achmaddarussalamridho.my.id/]
