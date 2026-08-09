@@ -8,8 +8,17 @@ import { useToastStore } from "@/store/toastStore";
 import { useWishlistStore } from "@/store/wishlistStore";
 import { getImageUrl } from "@/lib/utils";
 
+interface Product {
+    id: number;
+    name: string;
+    price: number;
+    image_url?: string | null;
+    category?: { name: string };
+    reviews?: { rating: number }[];
+}
+
 interface ProductCardProps {
-    product: any;
+    product: Product;
     index?: number;
 }
 
@@ -22,7 +31,7 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
 
     const averageRating =
         product.reviews && product.reviews.length > 0
-            ? (product.reviews.reduce((acc: number, r: any) => acc + r.rating, 0) / product.reviews.length).toFixed(1)
+            ? (product.reviews.reduce((acc: number, r: { rating: number }) => acc + r.rating, 0) / product.reviews.length).toFixed(1)
             : null;
 
     const handleAddToCart = (e: React.MouseEvent) => {
@@ -86,11 +95,12 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
             <Link href={`/product/${product.id}`} className="block relative overflow-hidden aspect-[4/3]">
                 <div className="bg-gray-100 dark:bg-gray-800 w-full h-full">
                     {product.image_url ? (
+                        // eslint-disable-next-line @next/next/no-img-element
                         <img
                             src={getImageUrl(product.image_url)}
                             alt={product.name}
                             className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
-                            onError={(e: any) => (e.target.style.display = "none")}
+                            onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => (e.currentTarget.style.display = "none")}
                         />
                     ) : (
                         <div className="w-full h-full flex items-center justify-center">

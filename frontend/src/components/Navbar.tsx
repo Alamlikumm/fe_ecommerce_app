@@ -5,7 +5,7 @@ import { useState, useEffect, useRef } from "react";
 import { useCartStore } from "@/store/cartStore";
 import { useWishlistStore } from "@/store/wishlistStore";
 import { useThemeStore } from "@/store/themeStore";
-import { ShoppingCart, User, LogIn, Search, Menu, X, ChevronDown, Package, Heart, Bell, Sun, Moon } from "lucide-react";
+import { ShoppingCart, User, LogIn, Search, Menu, X, Package, Heart, Bell, Sun, Moon } from "lucide-react";
 import { getImageUrl } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -25,6 +25,7 @@ export default function Navbar() {
 
     useEffect(() => {
         const token = localStorage.getItem("token");
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setIsLoggedIn(!!token);
 
         if (token) {
@@ -50,7 +51,7 @@ export default function Navbar() {
         const handleScroll = () => setScrolled(window.scrollY > 20);
         window.addEventListener("scroll", handleScroll);
         return () => window.removeEventListener("scroll", handleScroll);
-    }, []);
+    }, [setWishlistIds]);
 
     useEffect(() => {
         const handleClick = (e: MouseEvent) => {
@@ -204,10 +205,11 @@ export default function Navbar() {
                                         ) : (
                                             <>
                                                 <div className="max-h-60 overflow-y-auto divide-y divide-gray-100 dark:divide-gray-800">
-                                                    {cartItems.slice(0, 4).map((item: any) => (
+                                                    {cartItems.slice(0, 4).map((item: { id: number; image_url?: string | null; name: string; quantity: number; price: number }) => (
                                                         <div key={item.id} className="flex items-center gap-3 p-3 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
                                                             <div className="w-12 h-12 bg-gray-100 dark:bg-gray-800 rounded-xl overflow-hidden flex-shrink-0">
                                                                 {item.image_url ? (
+                                                                    // eslint-disable-next-line @next/next/no-img-element
                                                                     <img
                                                                         src={getImageUrl(item.image_url)}
                                                                         alt={item.name}

@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -28,7 +31,7 @@ const statusBadge: Record<string, string> = {
   cancelled: "badge-danger",
 };
 
-const timelineIcons: Record<string, any> = {
+const timelineIcons: any = {
   pending: Clock,
   paid: CreditCard,
   processing: Package,

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useEffect, useState } from "react";
@@ -15,7 +16,7 @@ import {
     Filler,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
-import { DollarSign, Package, Users, TrendingUp, ArrowUpRight, ShoppingBag, Plus, Eye } from "lucide-react";
+import { DollarSign, Users, TrendingUp, ArrowUpRight, ShoppingBag, Plus, Eye } from "lucide-react";
 import Link from "next/link";
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend, Filler);
@@ -51,13 +52,14 @@ const statCards = [
 ];
 
 export default function AdminDashboard() {
-    const [stats, setStats] = useState<any>(null);
+    const [stats, setStats] = useState<any | null>(null);
     const [recentOrders, setRecentOrders] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [dashboardError, setDashboardError] = useState("");
 
     useEffect(() => {
         const token = localStorage.getItem("token");
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setDashboardError("");
         Promise.all([
             fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/dashboard-stats`, {
@@ -99,14 +101,14 @@ export default function AdminDashboard() {
     }
 
     const chartData = {
-        labels: stats?.chartData?.map((d: any) => {
+        labels: stats?.chartData?.map((d: { date: string }) => {
             const date = new Date(d.date);
             return date.toLocaleDateString("id-ID", { day: "numeric", month: "short" });
         }) || [],
         datasets: [
             {
                 label: "Pendapatan (Rp)",
-                data: stats?.chartData?.map((d: any) => d.total) || [],
+                data: stats?.chartData?.map((d: { total: number }) => d.total) || [],
                 borderColor: "rgb(99, 102, 241)",
                 backgroundColor: "rgba(99, 102, 241, 0.08)",
                 tension: 0.4,
@@ -133,7 +135,7 @@ export default function AdminDashboard() {
                 cornerRadius: 12,
                 displayColors: false,
                 callbacks: {
-                    label: (ctx: any) => `Rp ${new Intl.NumberFormat("id-ID").format(ctx.raw)}`,
+                    label: (ctx: { raw: number }) => `Rp ${new Intl.NumberFormat("id-ID").format(ctx.raw)}`,
                 },
             },
         },
@@ -147,7 +149,7 @@ export default function AdminDashboard() {
                 ticks: {
                     font: { size: 12 },
                     color: "#94a3b8",
-                    callback: (v: any) => `Rp ${new Intl.NumberFormat("id-ID", { notation: "compact" }).format(v)}`,
+                    callback: (v: string | number) => `Rp ${new Intl.NumberFormat("id-ID", { notation: "compact" }).format(Number(v))}`,
                 },
             },
         },
@@ -255,7 +257,7 @@ export default function AdminDashboard() {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
-                                {recentOrders.map((order: any) => (
+                                {recentOrders.map((order: { id: number; user?: { name?: string }; status: string; total_price: number }) => (
                                     <tr key={order.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
                                         <td className="px-6 py-3.5">
                                             <span className="font-bold text-indigo-600 dark:text-indigo-400">

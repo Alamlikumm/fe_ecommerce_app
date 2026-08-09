@@ -20,7 +20,7 @@ export default function CategoriesPage() {
             });
             if (res.ok) setCategories(await res.json());
             else setError("Gagal mengambil data kategori.");
-        } catch (err) {
+        } catch {
             setError("Gagal menghubungi server.");
         } finally {
             setLoading(false);
@@ -28,19 +28,20 @@ export default function CategoriesPage() {
     };
 
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         fetchCategories();
     }, []);
 
-    const handleSubmit = async (e: any) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError("");
         const token = localStorage.getItem("token");
 
         try {
-            const url = editingId 
+            const url = editingId
                 ? `${process.env.NEXT_PUBLIC_API_URL}/admin/categories/${editingId}`
                 : `${process.env.NEXT_PUBLIC_API_URL}/admin/categories`;
-                
+
             const method = editingId ? "PUT" : "POST";
 
             const res = await fetch(url, {
@@ -60,7 +61,7 @@ export default function CategoriesPage() {
                 const data = await res.json();
                 setError(data.message || "Gagal menyimpan kategori");
             }
-        } catch (err) {
+        } catch {
             setError("Gagal menghubungi server");
         }
     };
@@ -77,7 +78,7 @@ export default function CategoriesPage() {
                 fetchCategories();
                 addToast({ type: "success", title: "Kategori dihapus!", message: "" });
             }
-        } catch (err) {}
+        } catch { }
     };
 
     return (
@@ -96,8 +97,8 @@ export default function CategoriesPage() {
                     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                         <div>
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nama Kategori</label>
-                            <input 
-                                type="text" 
+                            <input
+                                type="text"
                                 required
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
@@ -139,19 +140,19 @@ export default function CategoriesPage() {
                                     <td colSpan={4} className="p-8 text-center text-gray-500 dark:text-gray-400">Belum ada kategori.</td>
                                 </tr>
                             ) : (
-                                categories.map((cat: any) => (
+                                categories.map((cat: { id: number; name: string; slug: string }) => (
                                     <tr key={cat.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/30">
                                         <td className="p-4 text-gray-500 dark:text-gray-400">#{cat.id}</td>
                                         <td className="p-4 font-bold text-gray-900 dark:text-white">{cat.name}</td>
                                         <td className="p-4 text-gray-500 dark:text-gray-400">{cat.slug}</td>
                                         <td className="p-4 text-right">
-                                            <button 
+                                            <button
                                                 onClick={() => { setEditingId(cat.id); setName(cat.name); }}
                                                 className="text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300 font-medium mr-4"
                                             >
                                                 Edit
                                             </button>
-                                            <button 
+                                            <button
                                                 onClick={() => handleDelete(cat.id)}
                                                 className="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 font-medium"
                                             >

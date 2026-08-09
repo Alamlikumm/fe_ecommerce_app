@@ -6,7 +6,14 @@ import { useToastStore } from "@/store/toastStore";
 import { motion, AnimatePresence } from "framer-motion";
 import { ShoppingCart, Check } from "lucide-react";
 
-export default function AddToCartButton({ product, size = "md" }: { product: any; size?: "sm" | "md" | "lg" }) {
+interface Product {
+    id: number;
+    name: string;
+    price: number;
+    image_url?: string | null;
+}
+
+export default function AddToCartButton({ product, size = "md" }: { product: Product; size?: "sm" | "md" | "lg" }) {
     const addToCart = useCartStore((state) => state.addToCart);
     const addToast = useToastStore((state) => state.addToast);
     const [added, setAdded] = useState(false);

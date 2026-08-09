@@ -16,7 +16,7 @@ const defaultIcons: Record<string, React.ReactNode> = {
 };
 
 interface CategorySliderProps {
-    categories: any[];
+    categories: { id: number | string; name: string }[];
     activeId: string;
     onSelect: (id: string) => void;
 }
@@ -48,7 +48,7 @@ export default function CategorySlider({ categories, activeId, onSelect }: Categ
                 ref={scrollRef}
                 className="flex gap-3 overflow-x-auto no-scrollbar py-2 px-1"
             >
-                {allCategories.map((cat: any) => {
+                {allCategories.map((cat) => {
                     const isActive = activeId === (cat.id === "" ? "" : String(cat.id));
                     const icon = cat.name === "Semua"
                         ? <Grid3X3 className="w-5 h-5" />

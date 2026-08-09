@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { LayoutDashboard, Package, FolderOpen, ShoppingBag, Users, LogOut, ChevronLeft, ChevronRight, Store, Bell } from "lucide-react";
+import { LayoutDashboard, Package, FolderOpen, ShoppingBag, Users, LogOut, ChevronLeft, ChevronRight, Store } from "lucide-react";
 
 const navLinks = [
     { name: "Dashboard", path: "/admin", icon: LayoutDashboard },

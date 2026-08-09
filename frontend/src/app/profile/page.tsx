@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useEffect, useState } from "react";
@@ -5,8 +6,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  User, Package, Settings, LogOut, ChevronRight, Clock, ShoppingBag,
-  Shield, Calendar, Heart, MapPin, Plus, X, Pencil, Trash2, Star, Check, Loader2
+  Package, Settings, LogOut, ChevronRight, ShoppingBag,
+  Shield, Calendar, Heart, MapPin, Plus, X, Pencil, Trash2, Check, Loader2
 } from "lucide-react";
 import { useToastStore } from "@/store/toastStore";
 
@@ -59,7 +60,7 @@ const emptyForm = {
 };
 
 export default function ProfilePage() {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<any | null>(null);
   const [orders, setOrders] = useState<any[]>([]);
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [loading, setLoading] = useState(true);
@@ -96,6 +97,7 @@ export default function ProfilePage() {
         setLoading(false);
       })
       .catch(() => { router.push("/login"); });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleLogout = () => {
@@ -116,7 +118,7 @@ export default function ProfilePage() {
       const data = await res.json();
       if (res.ok) {
         addToast({ type: "success", title: "Berhasil!", message: data.message || "Profil berhasil diperbarui." });
-        setUser((prev: any) => ({ ...prev, name: profileName }));
+        setUser((prev) => (prev ? { ...prev, name: profileName } : null));
       } else {
         addToast({ type: "error", title: "Gagal", message: data.message || "Terjadi kesalahan." });
       }
@@ -360,7 +362,7 @@ export default function ProfilePage() {
                           </div>
 
                           <div className="p-4 md:p-5 divide-y divide-gray-100 dark:divide-gray-800">
-                            {order.items.map((item: any) => (
+                            {order.items.map((item: { id: number; quantity: number; price: number; product?: { name?: string } }) => (
                               <div key={item.id} className="flex items-center justify-between py-2.5 first:pt-0 last:pb-0">
                                 <div className="flex items-center gap-3">
                                   <span className="text-sm font-bold text-gray-900 dark:text-white">

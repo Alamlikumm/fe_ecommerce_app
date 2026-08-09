@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable react-hooks/set-state-in-effect */
 "use client";
 
 import { useEffect, useState } from "react";
@@ -7,7 +9,7 @@ export default function UsersPage() {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
-    const [editingUser, setEditingUser] = useState<any>(null);
+    const [editingUser, setEditingUser] = useState<any | null>(null);
     const [editForm, setEditForm] = useState({ name: "", email: "" });
     const addToast = useToastStore((s) => s.addToast);
 
@@ -203,7 +205,7 @@ export default function UsersPage() {
                                 <tr>
                                     <td colSpan={5} className="p-10 text-center text-gray-400 font-medium">Belum ada pengguna.</td>
                                 </tr>
-                            ) : users.map((user: any) => (
+                            ) : users.map((user: { id: number; name: string; email: string; role: string }) => (
                                 <tr key={user.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
                                     <td className="p-5 font-black text-gray-500 dark:text-gray-400">#{user.id}</td>
                                     <td className="p-5 font-bold text-gray-900 dark:text-white">{user.name}</td>

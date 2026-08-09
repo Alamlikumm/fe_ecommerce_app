@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { motion } from "framer-motion";
 import { Mail, MapPin, Phone, Globe, Share2, MessageCircle, Hash, Shield, Truck, RotateCcw, Headphones } from "lucide-react";
 
 const footerLinks = {

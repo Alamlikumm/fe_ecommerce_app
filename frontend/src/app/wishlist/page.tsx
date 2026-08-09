@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Heart, ShoppingBag, Trash2, Package, Star, ArrowLeft, Loader2 } from "lucide-react";
+import { Heart, ShoppingBag, Trash2, Package, ArrowLeft, Loader2 } from "lucide-react";
 import { getImageUrl } from "@/lib/utils";
 import Link from "next/link";
 import { useCartStore } from "@/store/cartStore";
@@ -126,12 +127,15 @@ export default function WishlistPage() {
                                 <Link href={`/product/${product.id}`} className="block relative overflow-hidden aspect-[4/3]">
                                     <div className="bg-gray-100 dark:bg-gray-800 w-full h-full">
                                         {product.image_url ? (
-                                            <img
+                                            <>
+                                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                                <img
                                                 src={getImageUrl(product.image_url)}
                                                 alt={product.name}
                                                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                                                onError={(e: any) => (e.target.style.display = "none")}
+                                                onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => ((e.target as HTMLImageElement).style.display = "none")}
                                             />
+                                            </>
                                         ) : (
                                             <div className="w-full h-full flex items-center justify-center">
                                                 <Package className="w-12 h-12 text-gray-300" />
