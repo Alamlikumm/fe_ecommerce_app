@@ -409,13 +409,15 @@ export default function ProfilePage() {
                   <h2 className="text-xl font-black text-gray-900 dark:text-white">
                     Alamat Saya
                   </h2>
-                  <button
-                    onClick={openAddAddress}
-                    className="flex items-center gap-2 px-4 py-2.5 bg-indigo-600 text-white rounded-xl text-sm font-bold hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-500/20"
-                  >
-                    <Plus className="w-4 h-4" />
-                    Tambah Alamat
-                  </button>
+                  {addresses.length > 0 && (
+                    <button
+                      onClick={openAddAddress}
+                      className="flex items-center gap-2 px-4 py-2.5 bg-indigo-600 text-white rounded-xl text-sm font-bold hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-500/20"
+                    >
+                      <Plus className="w-4 h-4" />
+                      Tambah Alamat
+                    </button>
+                  )}
                 </div>
 
                 {addresses.length === 0 ? (
