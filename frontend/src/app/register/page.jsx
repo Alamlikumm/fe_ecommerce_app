@@ -52,7 +52,9 @@ export default function Register() {
             localStorage.setItem("token", token);
 
             addToast({ type: "success", title: "Registrasi Berhasil! 🎉", message: "Selamat datang di TokoKita." });
-            setTimeout(() => router.push("/"), 800);
+            setTimeout(() => {
+                window.location.href = "/orders";
+            }, 800);
         } catch (error) {
             addToast({
                 type: "error",

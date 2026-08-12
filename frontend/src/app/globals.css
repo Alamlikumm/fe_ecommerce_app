@@ -73,8 +73,7 @@
 /* ========================================
    DARK MODE
    ======================================== */
-@media (prefers-color-scheme: dark) {
-  :root {
+.dark {
     --background: #0a0e1a;
     --foreground: #f1f5f9;
     --glass-bg: rgba(15, 23, 42, 0.8);
@@ -88,7 +87,6 @@
     --text-primary: #f1f5f9;
     --text-secondary: #94a3b8;
     --text-muted: #64748b;
-  }
 }
 
 /* ========================================
@@ -116,13 +114,11 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-@media (prefers-color-scheme: dark) {
-  body {
+.dark body {
     background-image:
       radial-gradient(ellipse at 0% 0%, hsla(253, 100%, 20%, 0.15) 0, transparent 50%),
       radial-gradient(ellipse at 100% 0%, hsla(225, 100%, 20%, 0.15) 0, transparent 50%),
       radial-gradient(ellipse at 50% 100%, hsla(30, 100%, 20%, 0.08) 0, transparent 50%);
-  }
 }
 
 /* ========================================
