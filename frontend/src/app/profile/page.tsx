@@ -814,7 +814,7 @@ export default function ProfilePage() {
                   <div className="bg-purple-50 dark:bg-purple-500/10 border border-purple-100 dark:border-purple-500/20 rounded-2xl p-4 flex items-start gap-3">
                     <MapPin className="w-5 h-5 text-purple-600 mt-0.5" />
                     <p className="text-sm text-purple-800 dark:text-purple-300 font-medium">
-                      Gunakan label yang mudah diingat seperti "Rumah", "Kantor", atau "Apartemen" untuk memudahkan pemilihan saat checkout.
+                      Gunakan label yang mudah diingat seperti &quot;Rumah&quot;, &quot;Kantor&quot;, atau &quot;Apartemen&quot; untuk memudahkan pemilihan saat checkout.
                     </p>
                   </div>
 
