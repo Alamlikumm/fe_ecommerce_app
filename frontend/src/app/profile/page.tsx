@@ -85,18 +85,22 @@ export default function ProfilePage() {
     if (!token) { router.push("/login"); return; }
 
     Promise.all([
-      fetch(`${process.env.NEXT_PUBLIC_API_URL}/user`, { headers: apiHeaders }).then((r) => r.json()),
-      fetch(`${process.env.NEXT_PUBLIC_API_URL}/my-orders`, { headers: apiHeaders }).then((r) => r.json()),
-      fetch(`${process.env.NEXT_PUBLIC_API_URL}/addresses`, { headers: apiHeaders }).then((r) => r.json()),
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/user`, { headers: apiHeaders }).then((r) => { if (!r.ok) throw new Error('Unauthenticated'); return r.json(); }),
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/my-orders`, { headers: apiHeaders }).then((r) => { if (!r.ok) throw new Error('Unauthenticated'); return r.json(); }),
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/addresses`, { headers: apiHeaders }).then((r) => { if (!r.ok) throw new Error('Unauthenticated'); return r.json(); }),
     ])
       .then(([userData, ordersData, addrData]) => {
+        if (userData?.message === "Unauthenticated.") throw new Error("Unauthenticated");
         setUser(userData);
         setProfileName(userData.name || "");
         setOrders(ordersData);
         setAddresses(addrData);
         setLoading(false);
       })
-      .catch(() => { router.push("/login"); });
+      .catch(() => { 
+        localStorage.removeItem("token");
+        router.push("/login"); 
+      });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
