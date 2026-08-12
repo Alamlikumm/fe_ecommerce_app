@@ -6,7 +6,7 @@ deployment:
     
     # 3. Copy semua file dari git repository ke folder public tujuan
     - /bin/cp -R * $DEPLOYPATH
-    - /bin/cp .env.example $DEPLOYPATH/.env
+    # (HAPUS copy .env.example agar tidak menimpa pengaturan database asli server)
     
     # 4. Masuk ke folder tujuan dan jalankan instalasi / pembaruan package Laravel
     - cd $DEPLOYPATH
