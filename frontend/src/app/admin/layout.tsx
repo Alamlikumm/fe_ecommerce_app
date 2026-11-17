@@ -44,7 +44,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         return (
             <div className="min-h-[60vh] flex items-center justify-center">
                 <div className="text-center">
-                    <div className="w-12 h-12 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin mx-auto mb-4" />
+                    <div className="w-12 h-12 border-4 border-amber-200 border-t-amber-600 rounded-full animate-spin mx-auto mb-4" />
                     <p className="text-sm text-gray-500 font-medium">Memuat Admin Panel...</p>
                 </div>
             </div>
@@ -69,7 +69,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                                 exit={{ opacity: 0 }}
                                 className="flex items-center gap-2"
                             >
-                                <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center">
+                                <div className="w-8 h-8 bg-amber-700 rounded-lg flex items-center justify-center">
                                     <Store className="w-4 h-4 text-white" />
                                 </div>
                                 <div>
@@ -97,7 +97,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                                 href={link.path}
                                 className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all group relative ${
                                     isActive
-                                        ? "bg-indigo-600 text-white shadow-lg shadow-indigo-600/20"
+                                        ? "bg-amber-700 text-white shadow-md shadow-amber-950/20"
                                         : "text-gray-400 hover:text-white hover:bg-gray-800/70"
                                 }`}
                             >
@@ -129,7 +129,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 {/* User */}
                 <div className="p-3 border-t border-gray-800">
                     <div className={`flex items-center gap-3 ${collapsed ? "justify-center" : ""}`}>
-                        <div className="w-9 h-9 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center text-sm font-black flex-shrink-0">
+                        <div className="w-9 h-9 bg-stone-900 border border-stone-800 text-stone-200 rounded-xl flex items-center justify-center text-sm font-black flex-shrink-0">
                             {userName.charAt(0).toUpperCase()}
                         </div>
                         <AnimatePresence mode="wait">
@@ -159,7 +159,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                                 key={link.path}
                                 href={link.path}
                                 className={`flex flex-col items-center gap-1 py-1.5 px-3 rounded-xl transition-colors ${
-                                    isActive ? "text-indigo-400" : "text-gray-500"
+                                    isActive ? "text-amber-500" : "text-gray-500"
                                 }`}
                             >
                                 <link.icon className="w-5 h-5" />

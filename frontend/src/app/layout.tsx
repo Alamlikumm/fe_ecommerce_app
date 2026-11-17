@@ -39,8 +39,9 @@ export default function RootLayout({
     <html
       lang="id"
       className={`${inter.variable} ${geistMono.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
-      <body className={`${inter.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}>
+      <body className={`${inter.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`} suppressHydrationWarning>
         <ThemeInit />
         <Navbar />
         <main className="flex-1">{children}</main>

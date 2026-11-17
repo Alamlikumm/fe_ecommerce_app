@@ -150,7 +150,7 @@ export default function UsersPage() {
                                     type="text" 
                                     value={editForm.name} 
                                     onChange={(e) => setEditForm({...editForm, name: e.target.value})}
-                                    className="w-full border border-gray-300 dark:border-gray-600 rounded-xl px-4 py-2.5 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:outline-none transition-all"
+                                    className="w-full border border-gray-300 dark:border-gray-600 rounded-xl px-4 py-2.5 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-amber-700/20 focus:border-amber-700 focus:outline-none transition-all"
                                     required
                                 />
                             </div>
@@ -160,7 +160,7 @@ export default function UsersPage() {
                                     type="email" 
                                     value={editForm.email} 
                                     onChange={(e) => setEditForm({...editForm, email: e.target.value})}
-                                    className="w-full border border-gray-300 dark:border-gray-600 rounded-xl px-4 py-2.5 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:outline-none transition-all"
+                                    className="w-full border border-gray-300 dark:border-gray-600 rounded-xl px-4 py-2.5 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-amber-700/20 focus:border-amber-700 focus:outline-none transition-all"
                                     required
                                 />
                             </div>
@@ -174,7 +174,7 @@ export default function UsersPage() {
                                 </button>
                                 <button 
                                     type="submit"
-                                    className="px-4 py-2 bg-indigo-600 text-white font-bold hover:bg-indigo-700 rounded-xl transition-colors"
+                                    className="px-4 py-2 bg-stone-900 hover:bg-stone-800 text-white dark:bg-amber-700 dark:hover:bg-amber-600 font-bold rounded-xl transition-colors"
                                 >
                                     Simpan Perubahan
                                 </button>

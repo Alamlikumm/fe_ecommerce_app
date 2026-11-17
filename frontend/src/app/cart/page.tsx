@@ -87,7 +87,7 @@ export default function CartPage() {
                     <h1 className="text-2xl md:text-3xl font-black text-gray-900 dark:text-white">Keranjang Belanja</h1>
                     <p className="text-sm text-gray-500 mt-1">{totalItems} barang di keranjangmu</p>
                 </div>
-                <Link href="/" className="flex items-center gap-2 text-sm font-bold text-indigo-600 hover:text-indigo-700 transition-colors">
+                <Link href="/" className="flex items-center gap-2 text-sm font-bold text-amber-800 dark:text-amber-400 hover:text-amber-900 transition-colors">
                     <ArrowLeft className="w-4 h-4" />
                     Lanjut Belanja
                 </Link>
@@ -232,7 +232,7 @@ export default function CartPage() {
                                                     value={couponInput}
                                                     onChange={(e) => { setCouponInput(e.target.value.toUpperCase()); setCouponError(""); }}
                                                     onKeyDown={(e) => e.key === "Enter" && handleApplyCoupon()}
-                                                    className="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:outline-none transition-all"
+                                                    className="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:ring-2 focus:ring-amber-700/20 focus:border-amber-700 focus:outline-none transition-all"
                                                 />
                                             </div>
                                             <button

@@ -10,8 +10,8 @@ const slides = [
         highlight: "& Hemat",
         subtitle: "Temukan jutaan produk berkualitas dengan harga terbaik. Nikmati gratis ongkir dan cashback setiap hari!",
         cta: "Mulai Belanja",
-        gradient: "from-indigo-900 via-purple-900 to-indigo-950",
-        blobColors: ["bg-indigo-500", "bg-purple-500", "bg-pink-500"],
+        gradient: "from-stone-900 via-stone-800 to-stone-950",
+        blobColors: ["bg-amber-600", "bg-orange-700", "bg-stone-700"],
     },
     {
         title: "Flash Sale",
@@ -140,7 +140,7 @@ export default function HeroBanner() {
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                         {trustBadges.map((badge) => (
                             <div key={badge.label} className="flex items-center justify-center gap-2 text-sm">
-                                <badge.icon className="w-4 h-4 text-indigo-500" />
+                                <badge.icon className="w-4 h-4 text-amber-600" />
                                 <span className="font-bold text-gray-700 dark:text-gray-300">{badge.label}</span>
                             </div>
                         ))}

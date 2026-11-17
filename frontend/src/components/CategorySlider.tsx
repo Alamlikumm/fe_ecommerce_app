@@ -31,7 +31,8 @@ export default function CategorySlider({ categories, activeId, onSelect }: Categ
         }
     };
 
-    const allCategories = [{ id: "", name: "Semua" }, ...categories];
+    const safeCategories = Array.isArray(categories) ? categories : [];
+    const allCategories = [{ id: "", name: "Semua" }, ...safeCategories];
 
     return (
         <div className="relative group">
@@ -62,8 +63,8 @@ export default function CategorySlider({ categories, activeId, onSelect }: Categ
                             onClick={() => onSelect(cat.id === "" ? "" : String(cat.id))}
                             className={`flex items-center gap-2 px-5 py-3 rounded-2xl font-bold text-sm whitespace-nowrap border transition-all duration-300 flex-shrink-0
                                 ${isActive
-                                    ? "bg-indigo-600 text-white border-indigo-600 shadow-lg shadow-indigo-500/25"
-                                    : "bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-700 hover:border-indigo-300 dark:hover:border-indigo-600 hover:text-indigo-600 dark:hover:text-indigo-400"
+                                    ? "bg-stone-900 text-white border-stone-900 dark:bg-amber-700 dark:border-amber-700 shadow-md shadow-stone-900/10 dark:shadow-amber-950/30"
+                                    : "bg-white dark:bg-stone-900 text-stone-600 dark:text-stone-300 border-stone-200 dark:border-stone-800 hover:border-amber-600/40 dark:hover:border-amber-700 hover:text-amber-800 dark:hover:text-amber-400"
                                 }`}
                         >
                             {icon}

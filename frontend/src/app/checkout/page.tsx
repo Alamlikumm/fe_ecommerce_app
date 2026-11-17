@@ -210,7 +210,7 @@ export default function CheckoutPage() {
                     <div key={step.num} className="flex items-center">
                         <div className={`flex items-center gap-2 px-4 py-2 rounded-full transition-all duration-300 ${
                             currentStep >= step.num
-                                ? "bg-indigo-600 text-white"
+                                ? "bg-stone-900 dark:bg-amber-700 text-white"
                                 : "bg-gray-100 dark:bg-gray-800 text-gray-400"
                         }`}>
                             <step.icon className="w-4 h-4" />
@@ -218,7 +218,7 @@ export default function CheckoutPage() {
                         </div>
                         {i < steps.length - 1 && (
                             <div className={`w-8 md:w-16 h-0.5 mx-1 transition-colors ${
-                                currentStep > step.num ? "bg-indigo-600" : "bg-gray-200 dark:bg-gray-700"
+                                currentStep > step.num ? "bg-stone-900 dark:bg-amber-700" : "bg-gray-200 dark:bg-gray-700"
                             }`} />
                         )}
                     </div>
@@ -233,7 +233,7 @@ export default function CheckoutPage() {
                 {/* Header */}
                 <div className="p-6 md:p-8 border-b border-gray-100 dark:border-gray-800">
                     <h1 className="text-2xl font-black text-gray-900 dark:text-white flex items-center gap-3">
-                        <CreditCard className="w-7 h-7 text-indigo-500" />
+                        <CreditCard className="w-7 h-7 text-amber-700" />
                         Checkout
                     </h1>
                     <p className="text-sm text-gray-500 mt-1">Periksa pesananmu sebelum melakukan pembayaran.</p>
@@ -271,7 +271,7 @@ export default function CheckoutPage() {
                 <div className="px-6 md:px-8 pb-6">
                     <div className="bg-gray-50 dark:bg-gray-800/50 rounded-2xl p-5 border border-gray-100 dark:border-gray-700">
                         <div className="flex items-center gap-2 mb-3">
-                            <MapPin className="w-4 h-4 text-indigo-500" />
+                            <MapPin className="w-4 h-4 text-amber-700" />
                             <span className="text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Alamat Pengiriman</span>
                         </div>
 
@@ -281,7 +281,7 @@ export default function CheckoutPage() {
                                 <button
                                     type="button"
                                     onClick={() => setShowAddressDropdown(!showAddressDropdown)}
-                                    className="w-full flex items-center justify-between px-4 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:outline-none transition-all"
+                                    className="w-full flex items-center justify-between px-4 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:ring-2 focus:ring-amber-700/20 focus:border-amber-700 focus:outline-none transition-all"
                                 >
                                     <span className="font-medium text-gray-700 dark:text-gray-300 truncate">
                                         {selectedAddressId
@@ -303,7 +303,7 @@ export default function CheckoutPage() {
                                                 type="button"
                                                 onClick={() => selectAddress(addr)}
                                                 className={`w-full text-left px-4 py-3 border-b border-gray-100 dark:border-gray-700 last:border-0 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors ${
-                                                    selectedAddressId === addr.id ? "bg-indigo-50 dark:bg-indigo-900/20" : ""
+                                                    selectedAddressId === addr.id ? "bg-amber-50 dark:bg-amber-950/20" : ""
                                                 }`}
                                             >
                                                 <div className="flex items-center gap-2">
@@ -324,7 +324,7 @@ export default function CheckoutPage() {
                             value={shippingAddress}
                             onChange={(e) => setShippingAddress(e.target.value)}
                             placeholder="Atau masukkan alamat lengkap pengiriman manual..."
-                            className="w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-3 text-sm focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:outline-none resize-none transition-all"
+                            className="w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-3 text-sm focus:ring-2 focus:ring-amber-700/20 focus:border-amber-700 focus:outline-none resize-none transition-all"
                         />
                     </div>
                 </div>
@@ -333,7 +333,7 @@ export default function CheckoutPage() {
                 <div className="px-6 md:px-8 pb-6">
                     <div className="bg-gray-50 dark:bg-gray-800/50 rounded-2xl p-5 border border-gray-100 dark:border-gray-700">
                         <div className="flex items-center gap-2 mb-3">
-                            <Tag className="w-4 h-4 text-indigo-500" />
+                            <Tag className="w-4 h-4 text-amber-700" />
                             <span className="text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Kode Promo</span>
                         </div>
 
@@ -359,7 +359,7 @@ export default function CheckoutPage() {
                                         value={couponInput}
                                         onChange={(e) => { setCouponInput(e.target.value.toUpperCase()); setCouponError(""); }}
                                         onKeyDown={(e) => e.key === "Enter" && handleApplyCoupon()}
-                                        className="flex-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:outline-none transition-all"
+                                        className="flex-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-amber-700/20 focus:border-amber-700 focus:outline-none transition-all"
                                     />
                                     <button
                                         onClick={handleApplyCoupon}
@@ -376,7 +376,7 @@ export default function CheckoutPage() {
                 </div>
 
                 {/* Total & CTA */}
-                <div className="p-6 md:p-8 bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-gray-800/80 dark:to-gray-800/50 border-t border-indigo-100 dark:border-gray-700">
+                <div className="p-6 md:p-8 bg-stone-50 dark:bg-stone-850 border-t border-stone-200 dark:border-stone-800">
                     <div className="flex items-center gap-2 mb-4">
                         <Lock className="w-4 h-4 text-emerald-600" />
                         <span className="text-xs font-bold text-emerald-700 dark:text-emerald-400">Pembayaran Aman & Terenkripsi</span>
@@ -401,7 +401,7 @@ export default function CheckoutPage() {
 
                     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
                         <div>
-                            <p className="text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider mb-1">Total Pembayaran</p>
+                            <p className="text-xs font-bold text-amber-800 dark:text-amber-400 uppercase tracking-wider mb-1">Total Pembayaran</p>
                             <p className="text-3xl md:text-4xl font-black gradient-text-primary">
                                 Rp {new Intl.NumberFormat("id-ID").format(totalPrice)}
                             </p>

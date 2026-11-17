@@ -50,10 +50,10 @@ export default function Login() {
         <div className="min-h-[80vh] flex items-center justify-center p-4">
             <div className="w-full max-w-5xl flex bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 overflow-hidden shadow-xl">
                 {/* Left - Branding */}
-                <div className="hidden lg:flex flex-col justify-center flex-1 bg-gradient-to-br from-indigo-600 via-purple-600 to-indigo-800 p-12 relative overflow-hidden">
+                <div className="hidden lg:flex flex-col justify-center flex-1 bg-gradient-to-br from-stone-900 via-stone-800 to-amber-950 p-12 relative overflow-hidden">
                     <div className="absolute inset-0 opacity-10" style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")" }} />
                     <div className="absolute top-10 right-10 w-48 h-48 bg-white/10 rounded-full blur-3xl" />
-                    <div className="absolute bottom-10 left-10 w-64 h-64 bg-pink-500/10 rounded-full blur-3xl" />
+                    <div className="absolute bottom-10 left-10 w-64 h-64 bg-amber-600/10 rounded-full blur-3xl" />
 
                     <div className="relative z-10">
                         <div className="text-5xl mb-6">🛍️</div>
@@ -87,7 +87,7 @@ export default function Login() {
                 >
                     <div className="max-w-sm mx-auto w-full">
                         <div className="flex items-center gap-2 mb-2">
-                            <LogIn className="w-6 h-6 text-indigo-500" />
+                            <LogIn className="w-6 h-6 text-amber-700" />
                             <h1 className="text-2xl font-black text-gray-900 dark:text-white">Masuk</h1>
                         </div>
                         <p className="text-sm text-gray-500 mb-8">Masukkan email dan password akunmu.</p>
@@ -102,7 +102,7 @@ export default function Login() {
                                         placeholder="nama@email.com"
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
-                                        className="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:outline-none transition-all"
+                                        className="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:ring-2 focus:ring-amber-700/20 focus:border-amber-700 focus:outline-none transition-all"
                                         required
                                     />
                                 </div>
@@ -116,7 +116,7 @@ export default function Login() {
                                         placeholder="••••••••"
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
-                                        className="w-full pl-11 pr-12 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:outline-none transition-all"
+                                        className="w-full pl-11 pr-12 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:ring-2 focus:ring-amber-700/20 focus:border-amber-700 focus:outline-none transition-all"
                                         required
                                     />
                                     <button
@@ -131,10 +131,10 @@ export default function Login() {
 
                             <div className="flex items-center justify-between">
                                 <label className="flex items-center gap-2 cursor-pointer">
-                                    <input type="checkbox" className="w-4 h-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
+                                    <input type="checkbox" className="w-4 h-4 rounded border-gray-300 text-amber-700 focus:ring-amber-700" />
                                     <span className="text-xs text-gray-500 font-medium">Ingat saya</span>
                                 </label>
-                                <a href="#" className="text-xs font-bold text-indigo-600 hover:text-indigo-700 transition-colors">Lupa Password?</a>
+                                <a href="#" className="text-xs font-bold text-amber-800 dark:text-amber-400 hover:text-amber-900 transition-colors">Lupa Password?</a>
                             </div>
 
                             <motion.button
@@ -179,7 +179,7 @@ export default function Login() {
 
                         <p className="mt-8 text-center text-sm text-gray-500">
                             Belum punya akun?{" "}
-                            <Link href="/register" className="font-bold text-indigo-600 hover:text-indigo-700 transition-colors">
+                            <Link href="/register" className="font-bold text-amber-800 dark:text-amber-400 hover:text-amber-900 transition-colors">
                                 Daftar Sekarang
                             </Link>
                         </p>

@@ -71,7 +71,7 @@ export default function WishlistPage() {
         return (
             <div className="min-h-[60vh] flex items-center justify-center">
                 <div className="text-center">
-                    <Loader2 className="w-12 h-12 text-indigo-500 animate-spin mx-auto mb-4" />
+                    <Loader2 className="w-12 h-12 text-amber-700 animate-spin mx-auto mb-4" />
                     <p className="text-sm text-gray-500 font-medium">Memuat wishlist...</p>
                 </div>
             </div>
@@ -89,7 +89,7 @@ export default function WishlistPage() {
                     </h1>
                     <p className="text-sm text-gray-500 mt-1">{products.length} produk favorit</p>
                 </div>
-                <Link href="/" className="flex items-center gap-2 text-sm font-bold text-indigo-600 hover:text-indigo-700 transition-colors">
+                <Link href="/" className="flex items-center gap-2 text-sm font-bold text-amber-800 dark:text-amber-400 hover:text-amber-900 transition-colors">
                     <ArrowLeft className="w-4 h-4" />
                     Lanjut Belanja
                 </Link>
@@ -143,7 +143,7 @@ export default function WishlistPage() {
                                         )}
                                     </div>
                                     {/* Category */}
-                                    <span className="absolute top-3 left-3 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md px-3 py-1 rounded-full text-[11px] font-bold text-indigo-600 dark:text-indigo-400 shadow-sm border border-white/50 dark:border-gray-700">
+                                    <span className="absolute top-3 left-3 bg-white/90 dark:bg-stone-900/90 backdrop-blur-md px-3 py-1 rounded-full text-[11px] font-bold text-stone-800 dark:text-stone-200 shadow-sm border border-stone-200/50 dark:border-stone-700">
                                         {product.category?.name || "Tanpa Kategori"}
                                     </span>
                                 </Link>
@@ -151,7 +151,7 @@ export default function WishlistPage() {
                                 {/* Info */}
                                 <div className="p-4 flex flex-col flex-1">
                                     <Link href={`/product/${product.id}`}>
-                                        <h3 className="font-bold text-[15px] text-gray-900 dark:text-white leading-snug line-clamp-2 hover:text-indigo-600 transition-colors min-h-[2.5rem]">
+                                        <h3 className="font-bold text-[15px] text-gray-900 dark:text-white leading-snug line-clamp-2 hover:text-amber-700 transition-colors min-h-[2.5rem]">
                                             {product.name}
                                         </h3>
                                     </Link>

@@ -35,18 +35,18 @@ const statCards = [
         label: "Total Pesanan",
         key: "orders",
         icon: ShoppingBag,
-        color: "from-blue-500 to-indigo-600",
-        bgLight: "bg-blue-50 dark:bg-blue-900/20",
-        textColor: "text-blue-600 dark:text-blue-400",
+        color: "from-amber-600 to-orange-700",
+        bgLight: "bg-amber-50 dark:bg-amber-900/20",
+        textColor: "text-amber-600 dark:text-amber-400",
         format: (v: number) => v.toString(),
     },
     {
         label: "Total Pengguna",
         key: "users",
         icon: Users,
-        color: "from-purple-500 to-pink-600",
-        bgLight: "bg-purple-50 dark:bg-purple-900/20",
-        textColor: "text-purple-600 dark:text-purple-400",
+        color: "from-stone-700 to-stone-900",
+        bgLight: "bg-stone-100 dark:bg-stone-800",
+        textColor: "text-stone-700 dark:text-stone-300",
         format: (v: number) => v.toString(),
     },
 ];
@@ -166,7 +166,7 @@ export default function AdminDashboard() {
         <div className="space-y-8">
             {/* Quick Actions */}
             <div className="flex flex-wrap gap-3">
-                <Link href="/admin/products" className="flex items-center gap-2 px-4 py-2.5 bg-indigo-600 text-white rounded-xl text-sm font-bold hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-500/20">
+                <Link href="/admin/products" className="flex items-center gap-2 px-4 py-2.5 bg-amber-700 text-white rounded-xl text-sm font-bold hover:bg-amber-800 transition-colors shadow-md shadow-amber-950/20">
                     <Plus className="w-4 h-4" /> Tambah Produk
                 </Link>
                 <Link href="/admin/orders" className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-xl text-sm font-bold border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
@@ -215,9 +215,9 @@ export default function AdminDashboard() {
                         <h3 className="text-base font-black text-gray-900 dark:text-white">Tren Penjualan</h3>
                         <p className="text-xs text-gray-500">7 hari terakhir</p>
                     </div>
-                    <div className="flex items-center gap-2 px-3 py-1.5 bg-indigo-50 dark:bg-indigo-900/30 rounded-lg">
-                        <TrendingUp className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
-                        <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400">Live</span>
+                    <div className="flex items-center gap-2 px-3 py-1.5 bg-amber-50 dark:bg-amber-950/30 rounded-lg">
+                        <TrendingUp className="w-4 h-4 text-amber-700 dark:text-amber-400" />
+                        <span className="text-xs font-bold text-amber-700 dark:text-amber-400">Live</span>
                     </div>
                 </div>
                 <div className="h-72">
@@ -240,7 +240,7 @@ export default function AdminDashboard() {
             >
                 <div className="flex items-center justify-between p-6 pb-4">
                     <h3 className="text-base font-black text-gray-900 dark:text-white">Pesanan Terbaru</h3>
-                    <Link href="/admin/orders" className="text-xs font-bold text-indigo-600 hover:text-indigo-700 transition-colors">
+                    <Link href="/admin/orders" className="text-xs font-bold text-amber-800 dark:text-amber-400 hover:text-amber-900 transition-colors">
                         Lihat Semua →
                     </Link>
                 </div>
@@ -260,7 +260,7 @@ export default function AdminDashboard() {
                                 {recentOrders.map((order: { id: number; user?: { name?: string }; status: string; total_price: number }) => (
                                     <tr key={order.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
                                         <td className="px-6 py-3.5">
-                                            <span className="font-bold text-indigo-600 dark:text-indigo-400">
+                                            <span className="font-bold text-amber-800 dark:text-amber-400">
                                                 #ORD-{order.id}
                                             </span>
                                         </td>

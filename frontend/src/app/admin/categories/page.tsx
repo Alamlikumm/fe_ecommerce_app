@@ -102,12 +102,12 @@ export default function CategoriesPage() {
                                 required
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
-                                className="w-full border-gray-300 dark:border-gray-600 rounded-lg p-2.5 border bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-indigo-500 focus:border-indigo-500"
+                                className="w-full border-gray-300 dark:border-gray-600 rounded-lg p-2.5 border bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-amber-700/20 focus:border-amber-700 outline-none"
                                 placeholder="Contoh: Laptop Gaming"
                             />
                         </div>
                         <div className="flex gap-2">
-                            <button type="submit" className="bg-indigo-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-indigo-700 w-full">
+                            <button type="submit" className="bg-stone-900 hover:bg-stone-800 text-white dark:bg-amber-700 dark:hover:bg-amber-600 px-4 py-2 rounded-lg font-bold w-full transition-colors">
                                 {editingId ? "Simpan Perubahan" : "Tambahkan"}
                             </button>
                             {editingId && (
@@ -148,7 +148,7 @@ export default function CategoriesPage() {
                                         <td className="p-4 text-right">
                                             <button
                                                 onClick={() => { setEditingId(cat.id); setName(cat.name); }}
-                                                className="text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300 font-medium mr-4"
+                                                className="text-amber-800 hover:text-amber-950 dark:text-amber-400 dark:hover:text-amber-300 font-medium mr-4 transition-colors"
                                             >
                                                 Edit
                                             </button>

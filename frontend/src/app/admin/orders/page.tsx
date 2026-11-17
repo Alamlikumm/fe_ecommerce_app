@@ -112,14 +112,14 @@ export default function AdminOrders() {
             placeholder="Cari ID, nama, atau email..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-11 pr-4 py-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:outline-none transition-all"
+            className="w-full pl-11 pr-4 py-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:ring-2 focus:ring-amber-700/20 focus:border-amber-700 focus:outline-none transition-all"
           />
         </div>
         <div className="relative">
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="appearance-none px-4 py-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl text-sm font-bold focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:outline-none transition-all pr-10"
+            className="appearance-none px-4 py-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl text-sm font-bold focus:ring-2 focus:ring-amber-700/20 focus:border-amber-700 focus:outline-none transition-all pr-10"
           >
             <option value="">Semua Status</option>
             {statuses.map((s) => (
@@ -155,7 +155,7 @@ export default function AdminOrders() {
               ) : (
                 filtered.map((order: any) => (
                   <tr key={order.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/30 transition-colors">
-                    <td className="p-4 font-bold text-indigo-600 dark:text-indigo-400">#ORD-{order.id}</td>
+                    <td className="p-4 font-bold text-amber-800 dark:text-amber-400">#ORD-{order.id}</td>
                     <td className="p-4">
                       <p className="font-bold text-gray-900 dark:text-white">{order.user?.name || "-"}</p>
                       <p className="text-xs text-gray-500">{order.user?.email}</p>
@@ -186,7 +186,7 @@ export default function AdminOrders() {
                     <td className="p-4">
                       <button
                         onClick={() => openDetail(order.id)}
-                        className="flex items-center gap-1.5 px-3 py-2 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 rounded-xl text-xs font-bold hover:bg-indigo-100 dark:hover:bg-indigo-900/50 transition-colors"
+                        className="flex items-center gap-1.5 px-3 py-2 bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 border border-amber-200/60 dark:border-amber-900/40 rounded-xl text-xs font-bold hover:bg-amber-100 dark:hover:bg-amber-900/40 transition-colors"
                       >
                         <Eye className="w-3.5 h-3.5" />
                         Detail
@@ -252,7 +252,7 @@ export default function AdminOrders() {
                     <div className="space-y-3">
                       {selectedOrder.timeline.map((entry: { id: number; label: string; description: string; created_at: string }) => (
                         <div key={entry.id} className="flex items-start gap-3">
-                          <div className="w-2 h-2 mt-1.5 rounded-full bg-indigo-500 flex-shrink-0" />
+                          <div className="w-2 h-2 mt-1.5 rounded-full bg-amber-600 flex-shrink-0" />
                           <div>
                             <p className="text-sm font-bold text-gray-900 dark:text-white">{entry.label}</p>
                             <p className="text-xs text-gray-500">{entry.description}</p>
@@ -279,7 +279,7 @@ export default function AdminOrders() {
                       <select
                         value={selectedOrder._newStatus || selectedOrder.status}
                         onChange={(e) => setSelectedOrder({ ...selectedOrder, _newStatus: e.target.value })}
-                        className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:outline-none"
+                        className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:ring-2 focus:ring-amber-700/20 focus:border-amber-700 focus:outline-none"
                       >
                         {statuses.map((s) => (
                           <option key={s.value} value={s.value}>{s.label}</option>
@@ -295,7 +295,7 @@ export default function AdminOrders() {
                           placeholder="JNE, SiCepat, dll"
                           value={selectedOrder._courier || ""}
                           onChange={(e) => setSelectedOrder({ ...selectedOrder, _courier: e.target.value })}
-                          className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:outline-none"
+                          className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:ring-2 focus:ring-amber-700/20 focus:border-amber-700 focus:outline-none"
                         />
                       </div>
                       <div>
@@ -305,7 +305,7 @@ export default function AdminOrders() {
                           placeholder="JP000123456"
                           value={selectedOrder._tracking || ""}
                           onChange={(e) => setSelectedOrder({ ...selectedOrder, _tracking: e.target.value })}
-                          className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:outline-none"
+                          className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:ring-2 focus:ring-amber-700/20 focus:border-amber-700 focus:outline-none"
                         />
                       </div>
                     </div>
@@ -317,7 +317,7 @@ export default function AdminOrders() {
                         value={selectedOrder._notes || ""}
                         onChange={(e) => setSelectedOrder({ ...selectedOrder, _notes: e.target.value })}
                         placeholder="Catatan internal..."
-                        className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:outline-none resize-none"
+                        className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:ring-2 focus:ring-amber-700/20 focus:border-amber-700 focus:outline-none resize-none"
                       />
                     </div>
 

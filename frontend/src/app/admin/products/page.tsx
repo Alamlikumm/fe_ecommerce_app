@@ -175,7 +175,7 @@ export default function ProductsPage() {
                     <h2 className="text-3xl font-black text-gray-900 dark:text-white">Manajemen Produk</h2>
                     <p className="text-gray-500 dark:text-gray-400 mt-1">Tambah, ubah, atau hapus barang daganganmu.</p>
                 </div>
-                <button onClick={() => openModal()} className="flex items-center gap-2 px-5 py-3 bg-indigo-600 text-white rounded-xl font-bold text-sm hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-500/20">
+                <button onClick={() => openModal()} className="flex items-center gap-2 px-5 py-3 bg-stone-900 hover:bg-stone-800 text-white dark:bg-amber-700 dark:hover:bg-amber-600 rounded-xl font-bold text-sm transition-colors shadow-sm">
                     <Plus className="w-4 h-4" /> Tambah Produk
                 </button>
             </div>
@@ -217,7 +217,7 @@ export default function ProductsPage() {
                                         </span>
                                     </td>
                                     <td className="p-4 text-right">
-                                        <button onClick={() => openModal(p)} className="text-indigo-600 hover:text-indigo-800 font-bold mr-4 text-xs">Edit</button>
+                                        <button onClick={() => openModal(p)} className="text-amber-800 hover:text-amber-950 dark:text-amber-400 dark:hover:text-amber-300 font-bold mr-4 text-xs transition-colors">Edit</button>
                                         <button onClick={() => handleDelete(p.id)} className="text-red-500 hover:text-red-700 font-bold text-xs">Hapus</button>
                                     </td>
                                 </tr>
@@ -263,14 +263,14 @@ export default function ProductsPage() {
                                     <div>
                                         <label className="block text-xs font-bold text-gray-600 dark:text-gray-400 mb-2 uppercase tracking-wider">Nama Produk</label>
                                         <input type="text" required value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})}
-                                            className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:outline-none transition-all" />
+                                            className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:ring-2 focus:ring-amber-700/20 focus:border-amber-700 focus:outline-none transition-all" />
                                     </div>
 
                                     <div className="grid grid-cols-2 gap-4">
                                         <div>
                                             <label className="block text-xs font-bold text-gray-600 dark:text-gray-400 mb-2 uppercase tracking-wider">Kategori</label>
                                             <select required value={formData.category_id} onChange={(e) => setFormData({...formData, category_id: e.target.value})}
-                                                className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:outline-none transition-all">
+                                                className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:ring-2 focus:ring-amber-700/20 focus:border-amber-700 focus:outline-none transition-all">
                                                 <option value="" disabled>Pilih...</option>
                                                 {categories.map((c: { id: number; name: string }) => <option key={c.id} value={c.id}>{c.name}</option>)}
                                             </select>
@@ -278,7 +278,7 @@ export default function ProductsPage() {
                                         <div>
                                             <label className="block text-xs font-bold text-gray-600 dark:text-gray-400 mb-2 uppercase tracking-wider">Harga (Rp)</label>
                                             <input type="number" required min="0" value={formData.price} onChange={(e) => setFormData({...formData, price: e.target.value})}
-                                                className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:outline-none transition-all" />
+                                                className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:ring-2 focus:ring-amber-700/20 focus:border-amber-700 focus:outline-none transition-all" />
                                         </div>
                                     </div>
 
@@ -286,19 +286,19 @@ export default function ProductsPage() {
                                         <div>
                                             <label className="block text-xs font-bold text-gray-600 dark:text-gray-400 mb-2 uppercase tracking-wider">Stok</label>
                                             <input type="number" required min="0" value={formData.stock} onChange={(e) => setFormData({...formData, stock: e.target.value})}
-                                                className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:outline-none transition-all" />
+                                                className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:ring-2 focus:ring-amber-700/20 focus:border-amber-700 focus:outline-none transition-all" />
                                         </div>
                                         <div>
                                             <label className="block text-xs font-bold text-gray-600 dark:text-gray-400 mb-2 uppercase tracking-wider">Foto</label>
                                             <input type="file" accept="image/*" onChange={(e) => setImageFile(e.target.files?.[0] || null)}
-                                                className="w-full px-3 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-indigo-50 file:text-indigo-600 hover:file:bg-indigo-100 dark:file:bg-indigo-900/30 dark:file:text-indigo-400" />
+                                                className="w-full px-3 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-amber-50 file:text-amber-800 hover:file:bg-amber-100 dark:file:bg-amber-950/40 dark:file:text-amber-400" />
                                         </div>
                                     </div>
 
                                     <div>
                                         <label className="block text-xs font-bold text-gray-600 dark:text-gray-400 mb-2 uppercase tracking-wider">Deskripsi</label>
                                         <textarea rows={3} value={formData.description} onChange={(e) => setFormData({...formData, description: e.target.value})}
-                                            className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:outline-none transition-all resize-none" />
+                                            className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:ring-2 focus:ring-amber-700/20 focus:border-amber-700 focus:outline-none transition-all resize-none" />
                                     </div>
                                 </form>
 
@@ -307,7 +307,7 @@ export default function ProductsPage() {
                                     <div className="mt-8 pt-6 border-t border-gray-100 dark:border-gray-800">
                                         <div className="flex items-center justify-between mb-4">
                                             <h4 className="font-black text-gray-900 dark:text-white flex items-center gap-2">
-                                                <Layers className="w-4 h-4 text-indigo-500" />
+                                                <Layers className="w-4 h-4 text-amber-600" />
                                                 Varian Produk
                                             </h4>
                                             <button
@@ -338,7 +338,7 @@ export default function ProductsPage() {
                                                         </div>
                                                         <div className="flex gap-1">
                                                             <button onClick={() => { setEditingVariant(v); setVariantForm(v); setShowVariants(true); }}
-                                                                className="p-1 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-400 hover:text-indigo-500 transition-colors">
+                                                                className="p-1 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-400 hover:text-amber-700 dark:hover:text-amber-400 transition-colors">
                                                                 <Pencil className="w-3.5 h-3.5" />
                                                             </button>
                                                             <button onClick={() => deleteVariant(v.id!)}
@@ -377,33 +377,33 @@ export default function ProductsPage() {
                                                                     <label className="block text-xs font-bold text-gray-500 mb-1">Tipe</label>
                                                                     <input type="text" placeholder="Warna, Ukuran" value={variantForm.type}
                                                                         onChange={(e) => setVariantForm({...variantForm, type: e.target.value})}
-                                                                        className="w-full px-3 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:outline-none" />
+                                                                        className="w-full px-3 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:ring-2 focus:ring-amber-700/20 focus:border-amber-700 focus:outline-none" />
                                                                 </div>
                                                                 <div>
                                                                     <label className="block text-xs font-bold text-gray-500 mb-1">Nilai</label>
                                                                     <input type="text" placeholder="Merah, XL" value={variantForm.value}
                                                                         onChange={(e) => setVariantForm({...variantForm, value: e.target.value})}
-                                                                        className="w-full px-3 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:outline-none" />
+                                                                        className="w-full px-3 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:ring-2 focus:ring-amber-700/20 focus:border-amber-700 focus:outline-none" />
                                                                 </div>
                                                             </div>
                                                             <div>
                                                                 <label className="block text-xs font-bold text-gray-500 mb-1">Nama Varian</label>
                                                                 <input type="text" placeholder="Merah - XL" value={variantForm.name}
                                                                     onChange={(e) => setVariantForm({...variantForm, name: e.target.value})}
-                                                                    className="w-full px-3 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:outline-none" />
+                                                                    className="w-full px-3 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:ring-2 focus:ring-amber-700/20 focus:border-amber-700 focus:outline-none" />
                                                             </div>
                                                             <div className="grid grid-cols-2 gap-3">
                                                                 <div>
                                                                     <label className="block text-xs font-bold text-gray-500 mb-1">Penyesuaian Harga</label>
                                                                     <input type="number" value={variantForm.price_adjustment}
                                                                         onChange={(e) => setVariantForm({...variantForm, price_adjustment: Number(e.target.value)})}
-                                                                        className="w-full px-3 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:outline-none" />
+                                                                        className="w-full px-3 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:ring-2 focus:ring-amber-700/20 focus:border-amber-700 focus:outline-none" />
                                                                 </div>
                                                                 <div>
                                                                     <label className="block text-xs font-bold text-gray-500 mb-1">Stok</label>
                                                                     <input type="number" min="0" value={variantForm.stock}
                                                                         onChange={(e) => setVariantForm({...variantForm, stock: Number(e.target.value)})}
-                                                                        className="w-full px-3 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:outline-none" />
+                                                                        className="w-full px-3 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:ring-2 focus:ring-amber-700/20 focus:border-amber-700 focus:outline-none" />
                                                                 </div>
                                                             </div>
                                                         </div>

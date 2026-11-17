@@ -77,7 +77,7 @@ export default function Register() {
                 >
                     <div className="max-w-sm mx-auto w-full">
                         <div className="flex items-center gap-2 mb-2">
-                            <UserPlus className="w-6 h-6 text-indigo-500" />
+                            <UserPlus className="w-6 h-6 text-amber-700" />
                             <h1 className="text-2xl font-black text-gray-900 dark:text-white">Daftar Akun</h1>
                         </div>
                         <p className="text-sm text-gray-500 mb-8">Buat akun gratis dan mulai belanja hari ini.</p>
@@ -88,7 +88,7 @@ export default function Register() {
                                 <div className="relative">
                                     <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                                     <input type="text" placeholder="John Doe" value={name} onChange={(e) => setName(e.target.value)}
-                                        className="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:outline-none transition-all" required />
+                                        className="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:ring-2 focus:ring-amber-700/20 focus:border-amber-700 focus:outline-none transition-all" required />
                                 </div>
                             </div>
                             <div>
@@ -96,7 +96,7 @@ export default function Register() {
                                 <div className="relative">
                                     <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                                     <input type="email" placeholder="nama@email.com" value={email} onChange={(e) => setEmail(e.target.value)}
-                                        className="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:outline-none transition-all" required />
+                                        className="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:ring-2 focus:ring-amber-700/20 focus:border-amber-700 focus:outline-none transition-all" required />
                                 </div>
                             </div>
                             <div>
@@ -104,7 +104,7 @@ export default function Register() {
                                 <div className="relative">
                                     <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                                     <input type={showPassword ? "text" : "password"} placeholder="Min. 8 karakter" value={password} onChange={(e) => setPassword(e.target.value)}
-                                        className="w-full pl-11 pr-12 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:outline-none transition-all" required minLength={8} />
+                                        className="w-full pl-11 pr-12 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:ring-2 focus:ring-amber-700/20 focus:border-amber-700 focus:outline-none transition-all" required minLength={8} />
                                     <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors">
                                         {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                                     </button>
@@ -128,15 +128,15 @@ export default function Register() {
                                 <div className="relative">
                                     <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                                     <input type="password" placeholder="Ketik ulang password" value={passwordConfirmation} onChange={(e) => setPasswordConfirmation(e.target.value)}
-                                        className="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:outline-none transition-all" required minLength={8} />
+                                        className="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:ring-2 focus:ring-amber-700/20 focus:border-amber-700 focus:outline-none transition-all" required minLength={8} />
                                 </div>
                             </div>
 
                             <label className="flex items-start gap-2 cursor-pointer">
                                 <input type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)}
-                                    className="w-4 h-4 mt-0.5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
+                                    className="w-4 h-4 mt-0.5 rounded border-gray-300 text-amber-700 focus:ring-amber-700" />
                                 <span className="text-xs text-gray-500">
-                                    Saya menyetujui <a href="#" className="text-indigo-600 font-bold hover:underline">Syarat & Ketentuan</a> serta <a href="#" className="text-indigo-600 font-bold hover:underline">Kebijakan Privasi</a>
+                                    Saya menyetujui <a href="#" className="text-amber-800 dark:text-amber-400 font-bold hover:underline">Syarat & Ketentuan</a> serta <a href="#" className="text-amber-800 dark:text-amber-400 font-bold hover:underline">Kebijakan Privasi</a>
                                 </span>
                             </label>
 
@@ -148,7 +148,7 @@ export default function Register() {
 
                         <p className="mt-8 text-center text-sm text-gray-500">
                             Sudah punya akun?{" "}
-                            <Link href="/login" className="font-bold text-indigo-600 hover:text-indigo-700 transition-colors">Masuk</Link>
+                            <Link href="/login" className="font-bold text-amber-800 dark:text-amber-400 hover:text-amber-900 transition-colors">Masuk</Link>
                         </p>
                     </div>
                 </motion.div>

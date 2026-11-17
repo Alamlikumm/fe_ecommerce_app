@@ -4,7 +4,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { getImageUrl } from "@/lib/utils";
@@ -44,7 +44,7 @@ const timelineColors: Record<string, string> = {
   pending: "text-amber-500 border-amber-500",
   paid: "text-emerald-500 border-emerald-500",
   processing: "text-blue-500 border-blue-500",
-  shipped: "text-indigo-500 border-indigo-500",
+  shipped: "text-amber-600 border-amber-600",
   completed: "text-emerald-500 border-emerald-500",
   cancelled: "text-red-500 border-red-500",
 };
@@ -53,21 +53,25 @@ const timelineBg: Record<string, string> = {
   pending: "bg-amber-100 dark:bg-amber-900/30",
   paid: "bg-emerald-100 dark:bg-emerald-900/30",
   processing: "bg-blue-100 dark:bg-blue-900/30",
-  shipped: "bg-indigo-100 dark:bg-indigo-900/30",
+  shipped: "bg-amber-100 dark:bg-amber-950/40",
   completed: "bg-emerald-100 dark:bg-emerald-900/30",
   cancelled: "bg-red-100 dark:bg-red-900/30",
 };
 
-export default function OrderDetailPage({ params }: { params: { id: string } }) {
+export default function OrderDetailPage({ params }: { params?: any }) {
+  const routeParams = useParams();
+  const orderId = (routeParams?.id || params?.id) as string;
   const [order, setOrder] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
+    if (!orderId) return;
     const token = localStorage.getItem("token");
     if (!token) { router.push("/login"); return; }
 
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/my-orders/${params.id}`, {
+    const apiBase = process.env.NEXT_PUBLIC_API_URL || "https://api.achmaddarussalamridho.my.id/api";
+    fetch(`${apiBase}/my-orders/${orderId}`, {
       headers: { Authorization: `Bearer ${token}`, Accept: "application/json" },
     })
       .then((res) => {
@@ -77,13 +81,13 @@ export default function OrderDetailPage({ params }: { params: { id: string } }) 
       .then(setOrder)
       .catch(() => router.push("/profile"))
       .finally(() => setLoading(false));
-  }, [params.id, router]);
+  }, [orderId, router]);
 
   if (loading) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin mx-auto mb-4" />
+          <div className="w-12 h-12 border-4 border-amber-200 border-t-amber-600 rounded-full animate-spin mx-auto mb-4" />
           <p className="text-sm text-gray-500 font-medium">Memuat pesanan...</p>
         </div>
       </div>
@@ -106,7 +110,7 @@ export default function OrderDetailPage({ params }: { params: { id: string } }) 
       {/* Back Button */}
       <Link
         href="/profile"
-        className="inline-flex items-center gap-2 text-sm font-bold text-indigo-600 hover:text-indigo-700 transition-colors mb-6"
+        className="inline-flex items-center gap-2 text-sm font-bold text-amber-800 dark:text-amber-400 hover:text-amber-900 transition-colors mb-6"
       >
         <ArrowLeft className="w-4 h-4" />
         Kembali ke Profil
@@ -150,7 +154,7 @@ export default function OrderDetailPage({ params }: { params: { id: string } }) 
         {/* Tracking Timeline */}
         <div className="p-6 md:p-8">
           <h3 className="font-black text-gray-900 dark:text-white mb-6 flex items-center gap-2">
-            <Clock className="w-5 h-5 text-indigo-500" />
+            <Clock className="w-5 h-5 text-amber-700" />
             Status Pesanan
           </h3>
 
@@ -222,7 +226,7 @@ export default function OrderDetailPage({ params }: { params: { id: string } }) 
         >
           <div className="p-6 border-b border-gray-100 dark:border-gray-800">
             <h3 className="font-black text-gray-900 dark:text-white flex items-center gap-2">
-              <ShoppingBag className="w-5 h-5 text-indigo-500" />
+              <ShoppingBag className="w-5 h-5 text-amber-700" />
               Produk Dipesan
             </h3>
           </div>
@@ -270,7 +274,7 @@ export default function OrderDetailPage({ params }: { params: { id: string } }) 
           {/* Shipping Info */}
           <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-6">
             <h4 className="font-black text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-              <Truck className="w-4 h-4 text-indigo-500" />
+              <Truck className="w-4 h-4 text-amber-700" />
               Pengiriman
             </h4>
 
@@ -294,7 +298,7 @@ export default function OrderDetailPage({ params }: { params: { id: string } }) 
               {order.tracking_number && (
                 <div>
                   <p className="text-xs text-gray-500 font-medium">No. Resi</p>
-                  <p className="font-bold text-indigo-600 mt-0.5">
+                  <p className="font-bold text-amber-700 dark:text-amber-400 mt-0.5">
                     {order.tracking_number}
                   </p>
                 </div>
@@ -305,7 +309,7 @@ export default function OrderDetailPage({ params }: { params: { id: string } }) 
           {/* Price Summary */}
           <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-6">
             <h4 className="font-black text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-              <CreditCard className="w-4 h-4 text-indigo-500" />
+              <CreditCard className="w-4 h-4 text-amber-700" />
               Rincian Pembayaran
             </h4>
 

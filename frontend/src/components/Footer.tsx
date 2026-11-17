@@ -47,8 +47,8 @@ export default function Footer() {
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                         {trustFeatures.map((feat) => (
                             <div key={feat.label} className="flex items-center gap-3 group">
-                                <div className="w-12 h-12 bg-indigo-500/10 rounded-2xl flex items-center justify-center group-hover:bg-indigo-500/20 transition-colors">
-                                    <feat.icon className="w-6 h-6 text-indigo-400" />
+                                <div className="w-12 h-12 bg-amber-500/10 rounded-2xl flex items-center justify-center group-hover:bg-amber-500/20 transition-colors">
+                                    <feat.icon className="w-6 h-6 text-amber-500" />
                                 </div>
                                 <span className="font-bold text-sm text-white">{feat.label}</span>
                             </div>
@@ -63,8 +63,8 @@ export default function Footer() {
                     {/* Brand */}
                     <div className="lg:col-span-2">
                         <Link href="/" className="text-3xl font-black tracking-tighter">
-                            <span className="text-indigo-400">Toko</span>
-                            <span className="text-orange-400">Kita</span>
+                            <span className="text-white">Toko</span>
+                            <span className="text-amber-500">Kita</span>
                         </Link>
                         <p className="mt-4 text-gray-400 leading-relaxed max-w-sm">
                             Platform belanja online terpercaya dengan jutaan produk berkualitas.
@@ -80,10 +80,10 @@ export default function Footer() {
                                     <input
                                         type="email"
                                         placeholder="Email kamu..."
-                                        className="w-full pl-10 pr-4 py-3 bg-gray-800 border border-gray-700 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none focus:border-transparent placeholder:text-gray-500 text-white"
+                                        className="w-full pl-10 pr-4 py-3 bg-gray-800 border border-gray-700 rounded-xl text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none focus:border-transparent placeholder:text-gray-500 text-white"
                                     />
                                 </div>
-                                <button className="px-5 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold text-sm transition-colors whitespace-nowrap">
+                                <button className="px-5 py-3 bg-amber-600 hover:bg-amber-700 text-white rounded-xl font-bold text-sm transition-colors whitespace-nowrap">
                                     Subscribe
                                 </button>
                             </div>
@@ -92,7 +92,7 @@ export default function Footer() {
                         {/* Social */}
                         <div className="flex gap-3 mt-6">
                             {[Globe, Share2, MessageCircle, Hash].map((Icon, i) => (
-                                <a key={i} href="#" className="w-10 h-10 bg-gray-800 hover:bg-indigo-600 rounded-xl flex items-center justify-center transition-all duration-300 group">
+                                <a key={i} href="#" className="w-10 h-10 bg-gray-800 hover:bg-amber-600 rounded-xl flex items-center justify-center transition-all duration-300 group">
                                     <Icon className="w-4 h-4 text-gray-400 group-hover:text-white transition-colors" />
                                 </a>
                             ))}
@@ -121,7 +121,7 @@ export default function Footer() {
                                                     });
                                                 }
                                             }}
-                                            className="text-sm text-gray-400 hover:text-indigo-400 transition-colors"
+                                            className="text-sm text-gray-400 hover:text-amber-400 transition-colors"
                                         >
                                             {link.label}
                                         </Link>

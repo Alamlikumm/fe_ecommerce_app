@@ -5,7 +5,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { getImageUrl } from "@/lib/utils";
 import ProductCard from "@/components/ProductCard";
@@ -13,7 +13,9 @@ import { Star, ChevronRight, Home, Share2, Shield, Truck, RotateCcw, Minus, Plus
 import { useCartStore } from "@/store/cartStore";
 import { useToastStore } from "@/store/toastStore";
 
-export default function ProductDetailPage({ params }: { params: { id: string } }) {
+export default function ProductDetailPage({ params }: { params?: any }) {
+    const routeParams = useParams();
+    const productId = (routeParams?.id || params?.id) as string;
     const [product, setProduct] = useState<any>(null);
     const [relatedProducts, setRelatedProducts] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -37,11 +39,13 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
     const [notFound, setNotFound] = useState(false);
 
     const fetchProduct = async () => {
+        if (!productId) return;
         setLoading(true);
         setFetchError("");
         setNotFound(false);
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/${params.id}`);
+            const apiBase = process.env.NEXT_PUBLIC_API_URL || "https://api.achmaddarussalamridho.my.id/api";
+            const res = await fetch(`${apiBase}/products/${productId}`);
             if (!res.ok) {
                 if (res.status === 404) {
                     setNotFound(true);
@@ -55,7 +59,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
             setLoading(false);
 
             if (data.category_id) {
-                fetch(`${process.env.NEXT_PUBLIC_API_URL}/products?category_id=${data.category_id}`)
+                fetch(`${apiBase}/products?category_id=${data.category_id}`)
                     .then((r) => r.json())
                     .then((relData) => {
                         setRelatedProducts(
@@ -75,7 +79,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
     useEffect(() => {
         fetchProduct();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [params.id]);
+    }, [productId]);
 
     const submitReview = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -89,7 +93,8 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
         }
 
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/${params.id}/reviews`, {
+            const apiBase = process.env.NEXT_PUBLIC_API_URL || "https://api.achmaddarussalamridho.my.id/api";
+            const res = await fetch(`${apiBase}/products/${productId}/reviews`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
                 body: JSON.stringify({ rating, comment }),
@@ -169,7 +174,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                 <PackageX className="w-20 h-20 text-red-300 mb-4" />
                 <h2 className="text-2xl font-black text-gray-900 dark:text-white mb-2">Gagal memuat produk</h2>
                 <p className="text-gray-500 mb-6">{fetchError}</p>
-                <button onClick={fetchProduct} className="px-6 py-2.5 bg-indigo-600 text-white rounded-xl font-bold text-sm hover:bg-indigo-700 transition-colors">
+                <button onClick={fetchProduct} className="px-6 py-2.5 bg-amber-700 text-white rounded-xl font-bold text-sm hover:bg-amber-800 transition-colors">
                     Coba Lagi
                 </button>
             </div>
@@ -194,7 +199,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
             {/* Breadcrumb */}
             <div className="max-w-7xl mx-auto px-4 md:px-6 py-4">
                 <nav className="flex items-center gap-2 text-sm text-gray-500">
-                    <Link href="/" className="hover:text-indigo-600 transition-colors flex items-center gap-1">
+                    <Link href="/" className="hover:text-amber-700 transition-colors flex items-center gap-1">
                         <Home className="w-3.5 h-3.5" />
                         Home
                     </Link>
@@ -269,7 +274,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                                 ) : (
                                     <span className="text-sm text-gray-400">Belum ada ulasan</span>
                                 )}
-                                <button onClick={handleShare} className="ml-auto p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-400 hover:text-indigo-600">
+                                <button onClick={handleShare} className="ml-auto p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-400 hover:text-amber-700">
                                     <Share2 className="w-4 h-4" />
                                 </button>
                             </div>
@@ -299,8 +304,8 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                                                             }}
                                                             className={`px-4 py-2 rounded-xl text-sm font-bold border-2 transition-all ${
                                                                 isSelected
-                                                                    ? "bg-indigo-600 text-white border-indigo-600 shadow-lg shadow-indigo-500/20"
-                                                                    : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700 hover:border-indigo-300 dark:hover:border-indigo-600"
+                                                                    ? "bg-stone-900 dark:bg-amber-700 text-white border-stone-900 dark:border-amber-700 shadow-md"
+                                                                    : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700 hover:border-amber-700/50"
                                                             }`}
                                                         >
                                                             {v.value}
@@ -331,7 +336,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                                     { icon: RotateCcw, label: "7 Hari Garansi" },
                                 ].map((b) => (
                                     <div key={b.label} className="flex flex-col items-center gap-1.5 p-3 bg-gray-50 dark:bg-gray-800 rounded-xl text-center">
-                                        <b.icon className="w-4 h-4 text-indigo-500" />
+                                        <b.icon className="w-4 h-4 text-amber-700" />
                                         <span className="text-[11px] font-bold text-gray-600 dark:text-gray-400">{b.label}</span>
                                     </div>
                                 ))}
@@ -363,7 +368,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                                         whileHover={{ scale: 1.02 }}
                                         whileTap={{ scale: 0.96 }}
                                         onClick={handleAddToCart}
-                                        className="flex-1 py-3.5 border-2 border-indigo-600 text-indigo-600 rounded-2xl font-bold text-sm hover:bg-indigo-50 dark:hover:bg-indigo-950 transition-colors"
+                                        className="flex-1 py-3.5 border-2 border-stone-900 dark:border-stone-200 text-stone-900 dark:text-white rounded-2xl font-bold text-sm hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
                                     >
                                         + Keranjang
                                     </motion.button>
@@ -432,7 +437,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                                     >
                                         <div className="flex justify-between items-start mb-3">
                                             <div className="flex items-center gap-3">
-                                                <div className="w-9 h-9 bg-indigo-100 dark:bg-indigo-900 rounded-xl flex items-center justify-center text-xs font-black text-indigo-600 dark:text-indigo-400">
+                                                <div className="w-9 h-9 bg-stone-200 dark:bg-stone-800 rounded-xl flex items-center justify-center text-xs font-black text-stone-800 dark:text-stone-200">
                                                     {(review.user?.name || "U").charAt(0).toUpperCase()}
                                                 </div>
                                                 <div>
@@ -486,7 +491,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                                         rows={4}
                                         value={comment}
                                         onChange={(e) => setComment(e.target.value)}
-                                        className="w-full border border-gray-200 dark:border-gray-700 rounded-xl p-3 text-sm focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:outline-none bg-white dark:bg-gray-800 resize-none transition-all"
+                                        className="w-full border border-gray-200 dark:border-gray-700 rounded-xl p-3 text-sm focus:ring-2 focus:ring-amber-700/20 focus:border-amber-700 focus:outline-none bg-white dark:bg-gray-800 resize-none transition-all"
                                         placeholder="Ceritakan pengalamanmu..."
                                     />
                                 </div>
@@ -530,7 +535,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                     </div>
                     <button
                         onClick={handleAddToCart}
-                        className="px-5 py-3 border-2 border-indigo-600 text-indigo-600 rounded-xl font-bold text-sm"
+                        className="px-5 py-3 border-2 border-stone-900 dark:border-stone-200 text-stone-900 dark:text-white rounded-xl font-bold text-sm"
                     >
                         Keranjang
                     </button>

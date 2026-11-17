@@ -118,7 +118,7 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
                 </div>
 
                 {/* Category Badge */}
-                <span className="absolute top-3 left-3 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md px-3 py-1 rounded-full text-[11px] font-bold text-indigo-600 dark:text-indigo-400 shadow-sm border border-white/50 dark:border-gray-700">
+                <span className="absolute top-3 left-3 bg-white/90 dark:bg-stone-900/90 backdrop-blur-md px-3 py-1 rounded-full text-[11px] font-bold text-stone-800 dark:text-stone-200 shadow-sm border border-stone-200/50 dark:border-stone-700">
                     {product.category?.name || "Tanpa Kategori"}
                 </span>
 
@@ -138,7 +138,7 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
             {/* Info */}
             <div className="flex flex-col flex-1 p-4">
                 <Link href={`/product/${product.id}`}>
-                    <h3 className="font-bold text-[15px] text-gray-900 dark:text-white leading-snug line-clamp-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors min-h-[2.5rem]">
+                    <h3 className="font-bold text-[15px] text-gray-900 dark:text-white leading-snug line-clamp-2 group-hover:text-amber-700 dark:group-hover:text-amber-500 transition-colors min-h-[2.5rem]">
                         {product.name}
                     </h3>
                 </Link>

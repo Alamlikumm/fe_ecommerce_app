@@ -21,9 +21,11 @@ export default function Navbar() {
     const [scrolled, setScrolled] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [cartPreviewOpen, setCartPreviewOpen] = useState(false);
+    const [mounted, setMounted] = useState(false);
     const cartRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
+        setMounted(true);
         const token = localStorage.getItem("token");
         // eslint-disable-next-line react-hooks/set-state-in-effect
         setIsLoggedIn(!!token);
@@ -78,18 +80,18 @@ export default function Navbar() {
                 <div className="max-w-7xl mx-auto px-4 md:px-6 flex items-center justify-between gap-4">
                     {/* Logo */}
                     <Link href="/" className="text-2xl font-black tracking-tighter flex items-center gap-0.5 flex-shrink-0">
-                        <span className="text-indigo-600">Toko</span>
-                        <span className="text-orange-500">Kita</span>
+                        <span className="text-stone-900 dark:text-white">Toko</span>
+                        <span className="text-amber-700 dark:text-amber-500">Kita</span>
                     </Link>
 
                     {/* Search (Desktop) */}
                     <div className="hidden md:flex flex-1 max-w-xl mx-6">
                         <div className="relative w-full group">
-                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-indigo-500 transition-colors w-4 h-4" />
+                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-amber-700 transition-colors w-4 h-4" />
                             <input
                                 type="text"
                                 placeholder="Cari produk impianmu..."
-                                className="w-full pl-11 pr-4 py-2.5 bg-gray-100 dark:bg-gray-800 border border-transparent focus:border-indigo-500 rounded-2xl text-sm focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all placeholder:text-gray-400"
+                                className="w-full pl-11 pr-4 py-2.5 bg-gray-100 dark:bg-gray-800 border border-transparent focus:border-amber-700 rounded-2xl text-sm focus:ring-2 focus:ring-amber-700/20 focus:outline-none transition-all placeholder:text-gray-400"
                                 onKeyDown={(e) => {
                                     if (e.key === "Enter") {
                                         window.location.href = `/?search=${encodeURIComponent((e.target as HTMLInputElement).value)}`;
@@ -105,9 +107,10 @@ export default function Navbar() {
                         <button
                             onClick={toggleTheme}
                             className="p-2.5 rounded-xl text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                            title={isDark ? "Mode Terang" : "Mode Gelap"}
+                            title={mounted && isDark ? "Mode Terang" : "Mode Gelap"}
+                            aria-label="Toggle Theme"
                         >
-                            {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+                            {mounted && isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
                         </button>
 
                         {/* Wishlist */}
@@ -141,7 +144,7 @@ export default function Navbar() {
                                 href="/profile"
                                 className="hidden md:flex items-center gap-2 px-3 py-2 rounded-xl text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                             >
-                                <div className="w-7 h-7 bg-indigo-100 dark:bg-indigo-900 text-indigo-600 dark:text-indigo-400 rounded-lg flex items-center justify-center text-xs font-black">
+                                <div className="w-7 h-7 bg-stone-200 dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded-lg flex items-center justify-center text-xs font-black">
                                     {userName ? userName.charAt(0).toUpperCase() : "U"}
                                 </div>
                                 <span className="text-sm font-bold max-w-[80px] truncate">{userName || "Profil"}</span>
@@ -149,7 +152,7 @@ export default function Navbar() {
                         ) : (
                             <Link
                                 href="/login"
-                                className="hidden md:flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-950 transition-colors"
+                                className="hidden md:flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold text-amber-800 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-950/40 transition-colors"
                             >
                                 <LogIn className="w-4 h-4" />
                                 Masuk
@@ -282,7 +285,7 @@ export default function Navbar() {
                                     <input
                                         type="text"
                                         placeholder="Cari produk..."
-                                        className="w-full pl-10 pr-4 py-2.5 bg-gray-100 dark:bg-gray-800 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                                        className="w-full pl-10 pr-4 py-2.5 bg-gray-100 dark:bg-gray-800 rounded-xl text-sm focus:ring-2 focus:ring-amber-700 focus:outline-none"
                                         onKeyDown={(e) => {
                                             if (e.key === "Enter") {
                                                 window.location.href = `/?search=${encodeURIComponent((e.target as HTMLInputElement).value)}`;
@@ -295,8 +298,8 @@ export default function Navbar() {
                                     onClick={() => { toggleTheme(); setMobileMenuOpen(false); }}
                                     className="flex items-center gap-3 w-full px-4 py-3 rounded-xl text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                                 >
-                                    {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-                                    <span className="font-bold text-sm">{isDark ? "Mode Terang" : "Mode Gelap"}</span>
+                                    {mounted && isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+                                    <span className="font-bold text-sm">{mounted && isDark ? "Mode Terang" : "Mode Gelap"}</span>
                                 </button>
 
                                 {isLoggedIn ? (
@@ -312,7 +315,7 @@ export default function Navbar() {
                                     <Link
                                         href="/login"
                                         onClick={() => setMobileMenuOpen(false)}
-                                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-indigo-600 font-bold text-sm hover:bg-indigo-50 dark:hover:bg-indigo-950 transition-colors"
+                                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-amber-800 dark:text-amber-400 font-bold text-sm hover:bg-amber-50 dark:hover:bg-amber-950/40 transition-colors"
                                     >
                                         <LogIn className="w-5 h-5" />
                                         Masuk / Daftar

@@ -12,7 +12,7 @@ import ProductCard, { ProductCardSkeleton } from "@/components/ProductCard";
 
 export default function Home() {
   const [products, setProducts] = useState<any[]>([]);
-  const [categories, setCategories] = useState([]);
+  const [categories, setCategories] = useState<any[]>([]);
   const [search, setSearch] = useState("");
   const [searchInput, setSearchInput] = useState("");
   const searchTimer = useRef<NodeJS.Timeout | null>(null);
@@ -48,7 +48,8 @@ export default function Home() {
     params.append("page", String(page));
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products?${params.toString()}`);
+      const apiBase = process.env.NEXT_PUBLIC_API_URL || "https://api.achmaddarussalamridho.my.id/api";
+      const res = await fetch(`${apiBase}/products?${params.toString()}`);
 
       if (!res.ok) {
         throw new Error(`HTTP ${res.status}`);
@@ -56,14 +57,18 @@ export default function Home() {
 
       const data = await res.json();
 
-      if (data.data) {
+      if (data.data && Array.isArray(data.data)) {
         setProducts(data.data);
         setLastPage(data.last_page || 1);
         setTotal(data.total || 0);
-      } else {
+      } else if (Array.isArray(data)) {
         setProducts(data);
         setLastPage(1);
         setTotal(data.length);
+      } else {
+        setProducts([]);
+        setLastPage(1);
+        setTotal(0);
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Gagal memuat produk");
@@ -73,10 +78,25 @@ export default function Home() {
   }, [search, categoryId, sort, priceMin, priceMax, minRating, page]);
 
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories`)
-      .then((res) => res.json())
-      .then((data) => setCategories(data))
-      .catch((err) => console.error(err));
+    const apiBase = process.env.NEXT_PUBLIC_API_URL || "https://api.achmaddarussalamridho.my.id/api";
+    fetch(`${apiBase}/categories`)
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
+      .then((data) => {
+        if (Array.isArray(data)) {
+          setCategories(data);
+        } else if (data && Array.isArray(data.data)) {
+          setCategories(data.data);
+        } else {
+          setCategories([]);
+        }
+      })
+      .catch((err) => {
+        console.error("Gagal memuat kategori:", err);
+        setCategories([]);
+      });
   }, []);
 
   useEffect(() => {
@@ -150,13 +170,13 @@ export default function Home() {
           className="flex flex-col sm:flex-row gap-3 mb-4"
         >
           <div className="relative flex-1 group">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-indigo-500 transition-colors w-4 h-4" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-amber-700 transition-colors w-4 h-4" />
               <input
                   type="text"
                   placeholder="Cari nama produk..."
                   value={searchInput}
                   onChange={(e) => setSearchInput(e.target.value)}
-                  className="w-full pl-11 pr-4 py-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:outline-none text-sm transition-all placeholder:text-gray-400"
+                  className="w-full pl-11 pr-4 py-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl focus:ring-2 focus:ring-amber-700/20 focus:border-amber-700 focus:outline-none text-sm transition-all placeholder:text-gray-400"
                 />
           </div>
 
@@ -164,7 +184,7 @@ export default function Home() {
           <select
             value={sort}
             onChange={(e) => setSort(e.target.value)}
-            className="px-4 py-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl text-sm font-bold focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:outline-none transition-all appearance-none cursor-pointer"
+            className="px-4 py-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl text-sm font-bold focus:ring-2 focus:ring-amber-700/20 focus:border-amber-700 focus:outline-none transition-all appearance-none cursor-pointer"
           >
             <option value="newest">Terbaru</option>
             <option value="price_asc">Termurah</option>
@@ -177,8 +197,8 @@ export default function Home() {
             onClick={() => setShowFilters(!showFilters)}
             className={`flex items-center gap-2 px-4 py-3 rounded-2xl text-sm font-bold border transition-all ${
               showFilters || hasActiveFilters
-                ? "bg-indigo-600 text-white border-indigo-600"
-                : "bg-white dark:bg-gray-900 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-gray-700 hover:border-indigo-300"
+                ? "bg-stone-900 dark:bg-amber-700 text-white border-stone-900 dark:border-amber-700"
+                : "bg-white dark:bg-gray-900 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-gray-700 hover:border-amber-700/40"
             }`}
           >
             <SlidersHorizontal className="w-4 h-4" />
@@ -201,7 +221,7 @@ export default function Home() {
                 placeholder="Rp 0"
                 value={priceMin}
                 onChange={(e) => setPriceMin(e.target.value)}
-                className="w-32 px-3 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:outline-none"
+                className="w-32 px-3 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:ring-2 focus:ring-amber-700/20 focus:border-amber-700 focus:outline-none"
               />
             </div>
             <div>
@@ -211,7 +231,7 @@ export default function Home() {
                 placeholder="Rp 999.999"
                 value={priceMax}
                 onChange={(e) => setPriceMax(e.target.value)}
-                className="w-32 px-3 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:outline-none"
+                className="w-32 px-3 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:ring-2 focus:ring-amber-700/20 focus:border-amber-700 focus:outline-none"
               />
             </div>
             <div>
@@ -219,7 +239,7 @@ export default function Home() {
               <select
                 value={minRating}
                 onChange={(e) => setMinRating(e.target.value)}
-                className="px-3 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:outline-none"
+                className="px-3 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:ring-2 focus:ring-amber-700/20 focus:border-amber-700 focus:outline-none"
               >
                 <option value="">Semua</option>
                 <option value="4">4+ ★</option>
@@ -248,7 +268,7 @@ export default function Home() {
             {hasActiveFilters && (
               <button
                 onClick={clearFilters}
-                className="flex items-center gap-1 text-xs font-bold text-indigo-600 hover:text-indigo-700 transition-colors"
+                className="flex items-center gap-1 text-xs font-bold text-amber-700 hover:text-amber-800 transition-colors"
               >
                 <X className="w-3 h-3" />
                 Hapus Filter
@@ -282,7 +302,7 @@ export default function Home() {
             </p>
             <button
               onClick={fetchProducts}
-              className="px-6 py-2.5 bg-indigo-600 text-white rounded-xl font-bold text-sm hover:bg-indigo-700 transition-colors"
+              className="px-6 py-2.5 bg-amber-700 text-white rounded-xl font-bold text-sm hover:bg-amber-800 transition-colors"
             >
               Coba Lagi
             </button>
@@ -308,7 +328,7 @@ export default function Home() {
             {hasActiveFilters && (
               <button
                 onClick={clearFilters}
-                className="mt-6 px-6 py-2.5 bg-indigo-600 text-white rounded-xl font-bold text-sm hover:bg-indigo-700 transition-colors"
+                className="mt-6 px-6 py-2.5 bg-amber-700 text-white rounded-xl font-bold text-sm hover:bg-amber-800 transition-colors"
               >
                 Reset Filter
               </button>
@@ -347,7 +367,7 @@ export default function Home() {
                         onClick={() => setPage(p)}
                         className={`w-10 h-10 rounded-xl text-sm font-bold transition-all ${
                           p === page
-                            ? "bg-indigo-600 text-white shadow-lg shadow-indigo-500/25"
+                            ? "bg-stone-900 dark:bg-amber-700 text-white shadow-md shadow-stone-900/10"
                             : "border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800"
                         }`}
                       >
